@@ -1,0 +1,575 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#F9F9FB">
+<title>Energy advisor</title>
+<style>
+:root{--bg:#F9F9FB;--panel:#fff;--card:#fff;--in:#F9F9FB;--fg:#090C13;--mut:#626363;--line:#E0E2E8;--edge:#E0E2E8;--field:#858B94;--track:#DDE3E8;--acc:#039E7A;--accbg:#EAFFFA;--sel:#039E7A;
+  --ink:#262828;--link:#0F5B4A;--acct:#08775C;--blue:#1670B0;--bad:#C22F3D;--ok:#039E7A;--warn:#9C5200;--bar:#039E7A;--grad:#039E7A;color-scheme:light;
+  --disp:"Nunito","Poppins","Noto Sans",system-ui,sans-serif}      /* colours sampled from Yazio's iOS screens on Mobbin */
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:100%/1.5 "Noto Sans",Inter,"SF Pro Text",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+h1,h2,.disp{font-family:var(--disp);font-weight:900;letter-spacing:-.02em}
+.top{max-width:560px;margin:0 auto;padding:14px 20px 0;display:flex;gap:10px;align-items:center;justify-content:space-between}
+.top,main,footer{padding-left:max(20px,env(safe-area-inset-left));padding-right:max(20px,env(safe-area-inset-right))}
+.brand{display:flex;align-items:center;gap:8px;min-height:48px;font:900 1.1rem var(--disp);color:inherit;text-decoration:none}#clock{font-weight:500;font-size:.84rem}
+main{max-width:560px;margin:0 auto;padding:18px 20px 16px}
+footer{max-width:560px;margin:0 auto;padding:0 20px 112px;text-align:center}.foot{border:0;background:none;box-shadow:none;color:var(--link);font-size:.86rem;font-weight:700;min-height:48px}
+#nav{position:fixed;left:0;right:0;bottom:0;z-index:6;background:#fff;border-top:2px solid var(--line);display:flex;justify-content:center;padding:8px 0 calc(10px + env(safe-area-inset-bottom))}
+#nav:empty{display:none}#nav a{flex:0 1 150px;min-height:48px;display:flex;flex-direction:column;align-items:center;gap:2px;color:#5F6162;text-decoration:none;font-weight:700;font-size:.82rem}
+#nav a svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}#nav a.on{color:var(--acct)}
+h1{font-size:2.3rem;line-height:1.1;margin:0 0 2px}.sub{margin:0 0 6px;font-size:1.05rem}
+.sech{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:20px 0 6px;min-height:48px}.sech h2{font-size:1.45rem;margin:0}
+.more{border:0;background:none;box-shadow:none;padding:12px 0;color:var(--link);font-weight:800;font-size:1.05rem;text-decoration:none;cursor:pointer}
+.card{background:var(--card);border:2px solid var(--line);border-radius:22px;padding:20px;display:block;color:inherit;text-decoration:none}
+.card .card{background:var(--in);border-radius:16px;padding:14px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.name{font-weight:800}
+.w{font:900 2.3rem/1.15 var(--disp);letter-spacing:-.02em;font-variant-numeric:tabular-nums;margin:8px 0 2px}.big{font-size:3.4rem}
+.va{font-size:.82rem;color:var(--mut);font-variant-numeric:tabular-nums;margin-bottom:6px}
+.mut{color:var(--mut);font-size:.9rem}.lab{font-size:.78rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--mut)}
+.pill{font-size:.76rem;font-weight:700;border-radius:999px;padding:3px 10px;color:#656F53;background:#F5FCEC;white-space:nowrap}
+.pill.real,.pill.on{color:#0B7F63;background:#E3F9F1}.pill.alert{color:var(--warn);background:#FFF0DC}.pill.down{color:var(--bad);background:#FDE7E9}
+:focus-visible{outline:3px solid var(--sel);outline-offset:2px}
+button,select,input{font:inherit;padding:10px 14px;border:2px solid var(--line);background:#fff;color:var(--fg);border-radius:14px}select,input{border-color:var(--field)}
+button{cursor:pointer;font-weight:700;box-shadow:0 2px 0 var(--line)}
+.pri{background:var(--ink);border-color:var(--ink);color:#fff;box-shadow:0 3px 0 #000;text-decoration:none;font-weight:800}
+button:disabled{background:#EDEFF1;color:#767A7B;border-color:#EDEFF1;box-shadow:none;cursor:default}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:16px 0}
+.stat b{display:block;font:900 1.4rem var(--disp);font-variant-numeric:tabular-nums}
+svg.chart{width:100%;height:auto;display:block}.back{color:var(--link);text-decoration:none;font-weight:800}
+.field{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}label{font-size:.88rem;color:var(--mut)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.chips button{padding:12px 16px;font-size:.9rem;border-radius:999px;box-shadow:none}
+.chips button:hover,.chips button.sel{background:var(--accbg);border-color:var(--sel)}
+.aib{display:inline-flex;align-items:center;font-size:.8rem;font-weight:700;padding:5px 12px;border-radius:999px;background:var(--accbg);border:2px solid var(--sel);color:var(--link)}.aib[hidden]{display:none}
+.av{flex:none;display:grid;place-items:center}.chead{display:flex;gap:12px;align-items:center}
+.msgs{display:flex;flex-direction:column;gap:12px;margin:16px 0 4px;max-height:440px;overflow-y:auto}
+.msg{display:flex;gap:8px;max-width:90%;align-items:flex-end}.msg .t{white-space:pre-wrap}.bub{padding:10px 14px;min-width:0}
+.msg.me{align-self:flex-end}.msg.me .bub{background:var(--ink);color:#fff;border-radius:18px 18px 4px 18px}
+.msg.bot{align-self:flex-start}.msg.bot .bub{background:#EEF0F3;border-radius:18px 18px 18px 4px}
+.typing{color:var(--mut);animation:pulse 1.2s ease-in-out infinite}@keyframes pulse{50%{opacity:.45}}
+.writing .src,.writing details{visibility:hidden}.writing .t:after{content:"▍";color:var(--mut);animation:pulse 1s ease-in-out infinite}
+.empty{text-align:center;color:var(--mut);padding:18px 8px;font-size:.95rem}.src{font-size:.76rem;color:var(--mut);margin-top:6px}
+.composer{display:flex;gap:8px;align-items:center;background:#fff;border:2px solid var(--field);border-radius:999px;padding:5px 5px 5px 18px;margin-top:14px}
+.composer:focus-within{border-color:var(--acc)}.composer input{flex:1;min-width:0;border:0;background:none;padding:12px 0;outline:none;border-radius:0}
+.send{flex:none;width:48px;height:48px;border-radius:50%;padding:0;border:0;background:var(--ink);color:#fff;font-weight:800;font-size:1.05rem;box-shadow:none}
+.tgv{font:900 3rem/1.15 var(--disp);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+input[type=range]{width:100%;padding:0;border:0;background:none;accent-color:var(--acc);height:48px;margin:0}
+.tiphead{text-align:center;margin:26px 0 12px}.tiphead h2{font-size:1.7rem;line-height:1.15;margin:6px 0 0}
+.tips{padding:0;overflow:hidden}.tip{display:flex;gap:12px;align-items:center;padding:14px 18px}.tip+.tip{border-top:2px solid var(--line)}
+.tip:before{content:"";flex:none;width:9px;height:9px;border-radius:50%;background:var(--acc)}.tip>div{flex:1;min-width:0}
+.imp{font-size:.78rem;font-weight:700;border-radius:999px;padding:4px 11px;background:#EEF0F3;color:var(--mut);white-space:nowrap}.imp.save{background:#E3F9F1;color:#0B7F63}
+details{font-size:.82rem;color:var(--mut);margin-top:6px}pre{white-space:pre-wrap;word-break:break-word;margin:6px 0 0}
+table{border-collapse:collapse;width:100%;font-size:.9rem}th,td{text-align:left;padding:8px;border-bottom:2px solid var(--line);vertical-align:top}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}.tw{overflow-x:auto}.tw table{min-width:440px}
+.tag{font-size:.75rem;font-weight:800;border-radius:999px;padding:3px 10px;white-space:nowrap;vertical-align:middle;font-family:"Noto Sans",system-ui,sans-serif;letter-spacing:0}
+.tag.real{color:#0B7F63;background:#E3F9F1}.tag.sim{color:#fff;background:var(--blue)}.tag.asm{color:var(--warn);background:#FFF0DC}.best td{font-weight:800}
+.al{border-left:6px solid #E08A2B;margin-bottom:10px}.al.safety{border-left-color:var(--bad)}
+.al h3{margin:0;font-size:1.05rem;line-height:1.35}.al .cost{font-size:.82rem;font-weight:800}.al p{margin:8px 0 0}.al .row .mut{flex:1 1 180px}.al.acked{opacity:.7}
+.last{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline;margin-top:14px;padding-top:12px;border-top:2px solid var(--line)}.last b{font:900 1.15rem var(--disp);font-variant-numeric:tabular-nums}
+.est{font:900 2.9rem/1.15 var(--disp);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.plain{font:900 1.5rem/1.2 var(--disp);letter-spacing:-.01em;margin-bottom:4px}.plain.near{color:var(--warn)}
+.meter{margin:22px 0 8px}.mrates{display:flex;font-size:.76rem;color:var(--mut);margin-bottom:6px}.mrates span{text-align:center;white-space:nowrap}.mrates .cur{color:var(--link);font-weight:800}
+.mtrack{position:relative;display:flex;height:14px}.seg{border-right:2px solid #fff;border-radius:5px;background:#B9E9DC}
+.seg.cur{background:var(--acc)}.seg.hi{background:#F2C48D}
+.mrange{position:absolute;top:-5px;bottom:-5px;border:2px solid var(--fg);border-radius:5px;background:rgba(9,12,19,.08)}
+.mk{position:absolute;top:-7px;bottom:-7px;width:3px;margin-left:-1.5px;border-radius:2px;background:var(--fg)}.mk.sofar{background:#8A9099}.mk.plan{background:var(--blue)}
+.mticks{position:relative;height:18px;margin-top:9px;font-size:.76rem;color:var(--mut);font-variant-numeric:tabular-nums}.mticks span{position:absolute;transform:translateX(-50%);white-space:nowrap}
+.legend{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:.84rem;color:var(--mut)}.legend i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;background:var(--fg)}
+.legend i.sofar{background:#8A9099}.legend i.plan{background:var(--blue)}.legend i.range{border-radius:2px;border:2px solid var(--fg);background:rgba(9,12,19,.08)}
+.money b{font-size:1.6rem}.money.up b{color:var(--warn)}.money.down b{color:var(--acct)}
+.callout{margin-top:16px;padding:12px 16px;border-radius:14px;background:var(--accbg);color:var(--link);font-weight:700}
+.sec{margin-top:14px}.sec h2{font-size:1.2rem;margin:0 0 12px}.sec h2 .tag{display:table;margin-bottom:8px}
+details.sec{font-size:inherit;color:inherit}details.sec>summary{display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:48px;cursor:pointer;list-style:none}details.sec>summary::-webkit-details-marker{display:none}
+details.sec>summary h2{margin:0}details.sec>summary:after{content:"+";flex:none;font:900 1.5rem/1 var(--disp);color:var(--link)}details.sec[open]>summary{margin-bottom:12px}details.sec[open]>summary:after{content:"\2212"}
+.bar{display:grid;grid-template-columns:140px 1fr 180px;gap:12px;align-items:center;margin:10px 0}
+@media (max-width:560px){.bar{grid-template-columns:1fr auto}.bar .track{grid-column:1/-1;order:3}.bar .num .mut{display:block}}
+@media (max-width:560px){main .money{display:grid;grid-template-columns:1fr auto;gap:2px 12px;align-items:baseline}main .money .mut{grid-column:1/-1}}
+.bar .back{padding:12px 0}.cmp{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0}.cmp+.cmp{border-top:2px solid var(--line)}
+.track{background:var(--track);border-radius:999px;height:10px;overflow:hidden}.fill{background:var(--grad);height:100%;border-radius:999px}
+.num{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}.up{color:var(--warn)}.down{color:var(--acct)}
+.note{font-size:.8rem;color:var(--mut);margin-top:12px}.chk{display:flex;gap:10px;align-items:center;margin-top:14px;min-height:48px;font-size:.92rem;cursor:pointer}
+.chk input{flex:none;width:22px;height:22px;padding:0;accent-color:var(--acc)}
+.sum{padding:0;overflow:hidden}.sum3{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;text-align:center;padding:16px 10px 4px}
+.sum3 b{display:block;font:900 1.4rem/1.2 var(--disp);font-variant-numeric:tabular-nums}.sum3 span{color:var(--mut);font-size:.95rem}
+.arc{position:relative;width:150px;height:142px}.arc svg{position:absolute;left:0;top:0;width:150px;height:150px}
+.arc>div{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding-top:10px}.arc b{font-size:2rem}.arc span{font-size:.8rem;line-height:1.15;padding:0 34px}
+.mini3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding:8px 18px 18px;text-align:center}.mini3 span{color:var(--mut);font-size:.9rem;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mini3 .track{height:6px;margin:8px 0 6px}.mini3 b{font-size:.88rem;font-variant-numeric:tabular-nums}
+.now{background:var(--accbg);padding:10px 12px;display:flex;gap:8px;justify-content:center;align-items:center;font-size:.98rem}.now.att{background:#FFF0DC}
+.room{margin:18px 4px 8px}.list{padding:0;overflow:hidden}
+.lrow{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer}.lrow+.lrow{border-top:2px solid var(--line)}
+.ring{flex:none;width:52px;height:52px;border-radius:50%;border:4px solid var(--track);display:grid;place-items:center;font-size:1.35rem;background:#fff}.ring.on{border-color:var(--acc)}
+.lmain{flex:1;min-width:0}.lmain .t{display:block;font-weight:800;font-size:1.05rem;line-height:1.3}.lmain .mut{display:block}
+.rw{flex:none;text-align:right}.rw b{display:block;font:900 1.35rem/1.2 var(--disp);font-variant-numeric:tabular-nums}.rw .pill{display:inline-block;margin-top:4px}
+#splash{position:fixed;inset:0;z-index:30;background:#fff;display:grid;place-items:center;text-align:center;transition:opacity .35s}#splash.out{opacity:0;pointer-events:none}
+#splash h1{font-size:2.6rem;margin:6px 0 10px}#splash p{color:var(--mut);min-height:1.6em;margin:0 0 12px;padding:0 20px}
+.mascot{display:block;flex:none}#splash .mascot{margin:0 auto;animation:bob 1.6s ease-in-out infinite}@keyframes bob{50%{transform:translateY(-8px)}}
+.land{text-align:center;min-height:calc(100vh - 190px);min-height:calc(100dvh - 190px);display:flex;flex-direction:column;justify-content:center}.lstat{display:flex;align-items:center;justify-content:center;gap:4px;margin:10px 0}.lstat svg{width:66px;height:94px;flex:none}
+.lstat div{width:190px}.lstat b{display:block;font:900 2.1rem/1.05 var(--disp)}.lstat span{font-size:1.05rem}
+.land h1{font-size:2rem;line-height:1.12;margin:10px 0 22px}.land .mascot{margin:14px auto 0}.cta{width:100%}
+.cta{display:flex;flex-direction:column;gap:14px;max-width:420px;margin:0 auto}.cta a,.cta button{padding:16px;border-radius:18px;font-size:1.05rem;text-align:center}
+.scrim{position:fixed;inset:0;z-index:10;background:rgba(9,12,19,.55)}#modal .scrim{z-index:20}
+.sh{position:fixed;z-index:11;left:50%;bottom:0;transform:translateX(-50%);width:min(560px,100%);max-height:88vh;overflow-y:auto;background:var(--bg);border:2px solid var(--line);border-bottom:0;border-radius:28px 28px 0 0;padding:0 20px 28px;scrollbar-width:thin;scrollbar-color:var(--track) transparent}
+.sh.in{animation:up .22s ease-out}@keyframes up{from{transform:translate(-50%,100%)}}
+.sh h1{font-size:1.6rem;line-height:1.2;margin:0;overflow-wrap:anywhere}.sh .stats{margin:12px 0}.sh summary{cursor:pointer;font-weight:800;color:var(--fg);padding:12px 0;margin:-12px 0}.sh details{font-size:inherit}
+.grab{width:44px;height:5px;border-radius:3px;background:var(--track);margin:10px auto 12px}
+.shead{position:sticky;top:0;z-index:2;background:var(--bg);margin:0 -20px;padding:6px 20px}
+@media (min-width:640px){.sh{bottom:auto;top:50%;transform:translate(-50%,-50%);max-height:min(86vh,780px);border-bottom:2px solid var(--line);border-radius:28px}.sh.in{animation:pop .22s ease-out}.grab{display:none}.shead{padding-top:14px}}
+.x{flex:none;border-radius:50%;width:48px;height:48px;padding:0;line-height:1;font-size:1.15rem;background:#15191F;border-color:#15191F;color:#fff;box-shadow:none}
+.modal{position:fixed;z-index:21;left:50%;top:50%;transform:translate(-50%,-50%);width:min(820px,calc(100% - 24px));max-height:90vh;overflow-y:auto;background:var(--bg);border:2px solid var(--line);border-radius:28px;padding:22px;scrollbar-width:thin;scrollbar-color:var(--track) transparent}
+.modal.sm{width:min(440px,calc(100% - 24px));background:#fff}.mhead{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}.mhead h1{font-size:1.5rem;margin:0}
+.prog{flex:1;height:14px;border-radius:999px;background:var(--track);overflow:hidden}.prog i{display:block;height:100%;border-radius:999px;background:var(--acc);transition:width .25s}
+.wiz h1{font-size:1.7rem;text-align:center;margin:20px 0 10px}
+.opt{display:flex;justify-content:space-between;align-items:center;width:100%;text-align:left;margin-top:12px;border-radius:18px;padding:18px;font-weight:500;font-size:1.05rem;box-shadow:0 3px 0 var(--line)}
+.opt:hover{background:var(--accbg);border-color:var(--sel);box-shadow:0 3px 0 var(--sel)}
+.bigin{width:100%;border:0;border-bottom:3px solid var(--field);border-radius:0;text-align:center;font:900 1.9rem var(--disp);padding:10px 0;background:none;outline:none}.bigin:focus{border-color:var(--acc)}
+.radar{position:relative;width:104px;height:104px;display:grid;place-items:center;margin:6px auto 18px;font-size:1.8rem}
+.radar:before,.radar:after{content:"";position:absolute;inset:0;border-radius:50%;border:3px solid var(--acc);animation:ring 1.8s ease-out infinite}.radar:after{animation-delay:.9s}
+@keyframes ring{from{transform:scale(.5);opacity:.9}to{transform:scale(1.25);opacity:0}}
+.wform label{display:block;margin:12px 0 5px}.wform input,.wform select{width:100%}.werr{color:var(--bad);min-height:1.5em;margin-top:8px;font-size:.88rem;text-align:center}
+.wnav{display:flex;gap:10px;margin-top:14px}.wnav button{padding:15px;border-radius:18px}.wnav .pri{flex:1}
+.bubble{position:relative;background:#DFE1E6;border-radius:22px;padding:18px;text-align:center;font:900 1.3rem/1.2 var(--disp);margin:20px 0 26px}
+.bubble:after{content:"";position:absolute;left:52px;bottom:-14px;border:14px solid transparent;border-top-color:#DFE1E6;border-bottom:0;border-left-width:4px}
+/* Motion. Home and Bill rebuild their HTML every second, so entrances run only under body.enter (set on a page change)
+   and loops take their phase from --t (the wall clock at render), which keeps them continuous across rebuilds. */
+@keyframes rise{from{opacity:0;transform:translateY(12px)}}@keyframes fade{from{opacity:0}}@keyframes grow{from{transform:scaleX(0)}}
+@keyframes draw{from{stroke-dasharray:1 365}}@keyframes hop{40%{transform:translateY(-16px) rotate(-5deg)}70%{transform:translateY(0) rotate(3deg)}}
+@keyframes glow{from{box-shadow:0 0 0 0 rgba(4,173,134,.45)}to{box-shadow:0 0 0 9px rgba(4,173,134,0)}}
+@keyframes pop{from{opacity:0;transform:translate(-50%,-47%) scale(.96)}}@keyframes tap{50%{transform:scale(1.25)}}
+.enter #page>*{animation:rise .4s ease-out both}.enter #page>:nth-child(n+3){animation-delay:.06s}.enter #page>:nth-child(n+5){animation-delay:.12s}.enter #page>:nth-child(n+7){animation-delay:.18s}
+.enter .fill{transform-origin:left;animation:grow .6s .15s ease-out both}.enter .arc circle:last-child{animation:draw .7s .1s ease-out both}.enter #nav a.on svg{animation:tap .3s ease-out}
+.land>*{animation:rise .5s ease-out both}.land>:nth-child(2){animation-delay:.1s}.land>:nth-child(n+3){animation-delay:.2s}.land>:nth-child(n+5){animation-delay:.3s}
+.land .mascot{animation:rise .5s .2s ease-out both,bob 2.4s ease-in-out .7s 2}
+.ring.on{animation:glow 2s ease-out var(--t,0s) infinite}
+.w.live:after,#clock:not(:empty):before{content:"";display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--acc);vertical-align:middle;animation:glow 2s ease-out var(--t,0s) infinite}
+.w.live:after{margin-left:12px}#clock:not(:empty):before{margin:0 7px 2px 4px}
+.modal{animation:pop .22s ease-out}.scrim.in,#modal .scrim{animation:fade .2s ease-out}.wiz~*{animation:rise .28s ease-out both}.modal .mascot{animation:hop .5s ease-out 2}
+#plan .tiphead .mascot{animation:hop .5s ease-out 2}#plan .tip{animation:rise .3s ease-out both}#plan .tip:nth-child(2){animation-delay:.05s}#plan .tip:nth-child(3){animation-delay:.1s}#plan .tip:nth-child(n+4){animation-delay:.15s}
+.msg:last-child{animation:rise .25s ease-out both}
+button,.pri,.lrow,#nav a svg{transition:transform .08s,box-shadow .08s,background-color .15s,border-color .15s}
+button:not(:disabled):active,.pri:active{transform:translateY(2px);box-shadow:none}.x:active,.send:active{transform:scale(.9)}
+button:not(:disabled):not(.pri):not(.x):not(.send):not(.more):not(.foot):hover{border-color:var(--sel)}.pri:hover{background:#000}.more:hover,.foot:hover,.back:hover{text-decoration:underline}
+.lrow:hover{background:#F1FBF7}.lrow:active{background:var(--accbg);transform:scale(.985)}#nav a:active svg{transform:scale(.85)}
+.sh:focus,.modal:focus{outline:none}
+#offline{position:sticky;top:0;z-index:40;background:var(--bad);color:#fff;font-weight:700;font-size:.9rem;text-align:center;padding:10px 16px}#offline:empty{display:none}
+.off #clock:before{background:var(--bad)}.off #clock:before,.off .ring.on,.off .w.live:after{animation:none}
+@media (max-width:360px){.mini3{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;padding:8px 12px 16px;align-items:end}.mini3 span{white-space:normal;font-size:.8rem}.mini3 b{font-size:.8rem;white-space:nowrap}.sum3{padding:16px 4px 4px}}
+#plan:empty~*{display:none}main:has(#plan:empty){min-height:100vh}      /* nothing below the plan jumps when it arrives */
+@media (prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+</style></head><body>
+<div id="offline" role="status"></div>
+<div id="splash"><div><div id="sm"></div><h1>Energy advisor</h1><p role="status">Starting…</p></div></div>
+<header><div class="top">
+  <a class="brand" href="#/"><span id="bl"></span><span>Energy advisor <span class="mut" id="clock"></span></span></a>
+</div></header>
+<main id="page"></main>
+<footer><button class="foot" id="foot">How we know: data and limits &rarr;</button></footer>
+<nav id="nav" aria-label="Main"></nav>
+<div id="sheet"></div><div id="modal"></div>
+<script>
+const PAGES=[["devices","Home",'<path d="M9 3v5M15 3v5M6 8h12v3a6 6 0 0 1-12 0zM12 17v4"/>'],["bill","Bill",'<path d="M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6"/>'],["advisor","Advisor",'<path d="M4 5h16v11H9l-5 4zM12 8v5M9.5 10.5h5"/>']];
+// Watt, our own mascot: a plug-headed blob. mood: "" | "cheer" (arms up) | "smart" (glasses)
+function mascot(mood,size){
+  const arm=(x,r)=>`<rect x="${x}" y="${mood==="cheer"?22:58}" width="16" height="32" rx="8" fill="#05C896"${mood==="cheer"?` transform="rotate(${r} ${x+8} 54)"`:""}/>`;
+  return `<svg class="mascot" width="${size}" height="${Math.round(size*130/120)}" viewBox="0 0 120 130" aria-hidden="true"><defs><linearGradient id="mg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#45E6F2"/><stop offset="1" stop-color="#05C896"/></linearGradient></defs>
+    <rect x="43" y="3" width="9" height="24" rx="4.5" fill="#B8C2CB"/><rect x="68" y="3" width="9" height="24" rx="4.5" fill="#B8C2CB"/>${arm(8,-20)}${arm(96,20)}
+    <rect x="38" y="102" width="17" height="24" rx="8.5" fill="#05C896"/><rect x="65" y="102" width="17" height="24" rx="8.5" fill="#05C896"/>
+    <rect x="20" y="20" width="80" height="92" rx="38" fill="url(#mg)"/><ellipse cx="60" cy="56" rx="27" ry="21" fill="#fff"/>
+    <circle cx="50" cy="53" r="3.8" fill="#111"/><circle cx="70" cy="53" r="3.8" fill="#111"/><path d="M51 61q9 10 18 0z" fill="#111"/><path d="M56 66.5q4 2.5 8 0-4 3.5-8 0z" fill="#FF7BC8"/>
+    ${mood==="smart"?'<g fill="none" stroke="#111" stroke-width="2.6"><rect x="40.5" y="45.5" width="17" height="14" rx="5"/><rect x="62.5" y="45.5" width="17" height="14" rx="5"/><path d="M57.5 52h5"/></g>':""}
+    <path d="M63 82l-10 13h7l-3 11 11-14h-7z" fill="#FFE45C"/></svg>`;
+}
+function laurel(flip){
+  let L=""; for(let i=1;i<=7;i++){const t=i/7.5,u=1-t,x=u*u*50+2*u*t*10+t*t*16,y=u*u*88+2*u*t*66+t*t*6,a=-150+t*75;
+    L+=`<ellipse cx="${(x-9).toFixed(1)}" cy="${y.toFixed(1)}" rx="9" ry="3.8" transform="rotate(${(a+215).toFixed(0)} ${x.toFixed(1)} ${y.toFixed(1)})"/><ellipse cx="${(x+9).toFixed(1)}" cy="${y.toFixed(1)}" rx="9" ry="3.8" transform="rotate(${(a+100).toFixed(0)} ${x.toFixed(1)} ${y.toFixed(1)})"/>`}
+  return `<svg viewBox="0 0 64 94" ${flip?'style="transform:scaleX(-1)"':""} aria-hidden="true"><g fill="#03D4A3">${L}</g><path d="M50 88Q10 66 16 6" fill="none" stroke="#03D4A3" stroke-width="3" stroke-linecap="round"/></svg>`;
+}
+const CLASS={"must-run":"Must stay on","adjustable":"Can be reduced","switchable":"Can be switched off"};
+const SRC={battery:"Whole laptop, on battery",chip:"Processor + graphics only"};
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fmt=(t,o)=>new Date(t*1000).toLocaleString("en-GB",Object.assign({timeZone:"UTC"},o||{weekday:"short",day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"}));
+const api=async(p,b)=>(await fetch(p,b?{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(b)}:undefined)).json();
+const rm=v=>"RM "+v.toFixed(2);
+let timer=null, editing=false, ready={}, lastKey=null, enterT=0;                      // ready: what the splash learned from the server (models, learn_days)
+
+const beat=el=>el.style.setProperty("--t",-(Date.now()%2000)+"ms");      // loop phase from the wall clock, see the Motion note in the CSS
+let down=false;      // a press is in progress: rebuilding the page under it would drop the click
+addEventListener("pointerdown",()=>down=true,true); for(const t of ["pointerup","pointercancel","blur"])addEventListener(t,()=>down=false,true);
+// Focus has to outlive the 1 s rebuilds: name the focused element, then find its replacement.
+const fkey=a=>!a||a===document.body?null:a.id?"#"+a.id:a.dataset.go?`[data-go="${a.dataset.go}"]`:a.dataset.ack?`[data-ack="${a.dataset.ack}"]`:a.getAttribute("href")?`a[href="${a.getAttribute("href")}"]`:a.matches(".sh,summary")?a.localName==="summary"?"summary":".sh":"data-close" in a.attributes?"button[data-close]":null;
+const refocus=k=>{const t=k&&document.querySelector(k); if(t)t.focus({preventScroll:true})};
+const keep=el=>{const a=document.activeElement, k=el.contains(a)&&fkey(a); return()=>refocus(k)};
+const net=ok=>{document.body.classList.toggle("off",!ok); const o=$("#offline"), t=ok?"":"Can't reach the app server. Retrying…"; if(o.textContent!==t)o.textContent=t};
+function lock(){                                             // a sheet or modal is open: the page behind it cannot be scrolled, tabbed into or read
+  const m=!!$("#modal").firstChild, s=!!$("#sheet").firstChild; document.body.style.overflow=m||s?"hidden":"";
+  document.querySelectorAll("header,main,footer,nav").forEach(e=>e.inert=m||s); $("#sheet").inert=m;
+}
+let mclose=null, mback=null, sback=null;                     // mback/sback: what to refocus when the modal / sheet closes
+function openModal(html,cls,onclose){
+  closeModal(); mclose=onclose||null; mback=fkey(document.activeElement);
+  $("#modal").innerHTML=`<div class="scrim" data-mx></div><div class="modal ${cls||""}" role="dialog" aria-modal="true" tabindex="-1">${html}</div>`; bindMx(); lock(); $("#modal .modal").focus();
+}
+function bindMx(){document.querySelectorAll("#modal [data-mx]").forEach(x=>x.onclick=closeModal)}
+function closeModal(){if(mclose){const f=mclose;mclose=null;f()} $("#modal").innerHTML=""; lock(); refocus(mback); mback=null}
+
+function route(){
+  const [,pg="",raw]=location.hash.split("/"), id=raw&&decodeURIComponent(raw);
+  if(pg==="proof"){history.replaceState(null,"","#/devices");openProof();return route()}      // old links to the Proof page
+  const key=pg==="device"?"devices":pg;      // opening a device sheet is not a page change
+  if(key!==lastKey){lastKey=key;document.body.classList.add("enter");clearTimeout(enterT);enterT=setTimeout(()=>document.body.classList.remove("enter"),900)}
+  $("#nav").innerHTML=pg?PAGES.map(([k,l,ic])=>`<a href="#/${k}" ${key===k?'class="on" aria-current="page"':""}><svg viewBox="0 0 24 24" aria-hidden="true">${ic}</svg>${l}</a>`).join(""):"";
+  clearInterval(timer); editing=false;
+  if(!pg)$("#clock").textContent="";
+  if(pg!=="device")$("#sheet").innerHTML="";
+  lock(); if(pg!=="device"){refocus(sback);sback=null}
+  document.title=(pg?(PAGES.find(p=>p[0]===key)||[0,"Not found"])[1]+" · ":"")+"Energy advisor";
+  const fn=!pg?landing:pg==="device"?()=>devices(id):pg==="devices"?()=>devices():pg==="bill"?bill:pg==="advisor"?advisor:()=>soon();
+  const run=()=>Promise.resolve().then(fn).then(()=>net(true),()=>net(false));      // a failed refresh says so instead of freezing on old numbers
+  run(); timer=setInterval(()=>{if(!editing&&!down)run()},1000);
+}
+const wait=ms=>new Promise(r=>setTimeout(r,ms)), plural=(n,w)=>`${n} ${w}${n===1?"":"s"}`;
+async function boot(){                                       // splash: every line is a real call to the app server
+  const el=$("#splash"), say=t=>{el.querySelector("p").textContent=t};
+  try{
+    say("Connecting to the app server…"); const [s]=await Promise.all([api("/api/devices"),wait(500)]);
+    const n=s.devices.filter(d=>!d.real).length; say(n?plural(n,"plug")+" reporting…":"No plugs paired yet…");
+    const [p]=await Promise.all([api("/api/proof"),wait(500)]); ready={models:p.models_ready,learn:p.learn_days};
+    say(p.models_ready?`Learned model ready on ${plural(p.models_ready,"appliance")}.`:"Learned model still training."); await wait(550);
+    say("Ready."); await wait(250);
+  }catch(e){say("Could not reach the app server. Is python3 server.py running?");el.firstElementChild.insertAdjacentHTML("beforeend",'<div style="text-align:center"><button onclick="location.reload()">Try again</button></div>');return}
+  el.classList.add("out"); setTimeout(()=>el.remove(),400);
+}
+async function landing(){
+  if(!$("#land")){
+    $("#page").innerHTML=`<div id="land" class="land">
+    <div class="lstat">${laurel()}<div><b id="l1">&ndash;</b><span id="l1s">&nbsp;</span></div>${laurel(1)}</div>
+    <div class="lstat">${laurel()}<div><b id="l2">&ndash;</b><span id="l2s">&nbsp;</span></div>${laurel(1)}</div>
+    ${mascot("cheer",92)}<h1>Let's make every watt count!</h1>
+    <div class="cta"><a class="pri" href="#/devices">Launch live simulation</a><button id="audit">View real data audit</button></div>
+    <div class="note">Demo: a simulated house replaying real appliance recordings, plus this laptop live. No real smart plug.</div></div>`;
+    $("#audit").onclick=openProof;
+  }
+  try{
+    const [s,b]=await Promise.all([api("/api/devices"),api("/api/bill")]); if(!$("#land"))return;
+    const plugs=s.devices.filter(d=>!d.real), on=plugs.filter(d=>d.online);
+    $("#l1").textContent=`${on.length} of ${plugs.length}`; $("#l1s").textContent=plugs.length===1?"plug reporting":"plugs reporting";
+    $("#l2").textContent=rm(b.proj_rm); $("#l2s").textContent="on track this month";
+  }catch(e){if($("#l1")){$("#l1").innerHTML="&ndash;";$("#l1s").textContent="app server not reachable"}}
+}
+function watts(d){return d.online?`${d.watts<10?d.watts.toFixed(1):Math.round(d.watts)} W`:(d.real?"&ndash;":"offline")}
+
+const ago=(now,t)=>{const m=Math.max(0,Math.round((now-t)/60));return m<60?m+" min":m<2880?Math.round(m/60)+" h":Math.round(m/1440)+" days"};
+function alertCard(i,now,link){
+  const cost=i.kind==="offline"?"Usage unknown":i.rm_month>=0.5?`about ${rm(i.rm_month)} extra a month`:"";
+  return `<div class="card al ${i.kind==="overload"?"safety":""} ${i.ack?"acked":""}">
+    <div class="row" style="flex-wrap:wrap"><h3>${link?`<a class="back" href="#/device/${encodeURIComponent(i.device)}">${esc(i.name)}</a>: `:""}${i.title}</h3>${cost?`<span class="pill cost ${i.kind==="overload"?"down":"alert"}">${cost}</span>`:""}</div>
+    <p>${esc(i.detail)} ${i.action}</p>
+    <div class="row" style="margin-top:10px;flex-wrap:wrap"><span class="mut">${i.closed?"Cleared "+ago(now,i.closed)+" ago, lasted "+ago(i.closed,i.opened):"Started "+ago(now,i.opened)+" ago"+(i.rm_month>=0.5?` · about ${i.extra_kwh_day.toFixed(1)} kWh extra a day`:"")}</span>
+    ${i.closed?"":i.ack?'<span class="mut">Acknowledged</span>':`<button data-ack="${i.id}">Got it</button>`}</div></div>`;
+}
+function bindAck(redo){document.querySelectorAll("button[data-ack]").forEach(b=>b.onclick=async()=>{await api("/api/alerts",{ack:+b.dataset.ack});redo()})}
+
+const ICON={fridge:"🧊",aircon:"❄️",heater:"🚿",tv:"📺",washer:"🧺",laptop:"💻"};      // by the type chosen at pairing; anything else gets a plug
+const live=d=>d.online&&d.watts>=1?"live":"";
+const badge=d=>d.real?'<span class="pill real">REAL</span>':!d.online?'<span class="pill down">Offline</span>':d.alerts?'<span class="pill alert">Alert</span>'
+  :d.learning?`<span class="pill">Learning ${d.learning.day} of ${d.learning.of}</span>`:d.state==="OFF"?'<span class="pill">Off</span>':'<span class="pill on">On</span>';
+async function devices(id){
+  const [s,a,b]=await Promise.all([api("/api/devices"),api("/api/alerts"),api("/api/bill")]); if(down)return; $("#clock").textContent=fmt(s.now);
+  const plugs=s.devices.filter(d=>!d.real), rooms=new Map();
+  for(const d of [...plugs,...s.devices.filter(d=>d.real)]){const k=d.real?"This laptop":d.room||"No room set";rooms.has(k)||rooms.set(k,[]);rooms.get(k).push(d)}
+  lastRooms=[...new Set(plugs.map(d=>d.room).filter(Boolean))];
+  const on=plugs.filter(d=>d.online), W=Math.round(on.reduce((t,d)=>t+d.watts,0)), ab=b.above, f=ab?Math.min(1,b.proj_kwh/ab.limit):1, C=2*Math.PI*58, A=C*.75;
+  const psum=b.rows.reduce((t,r)=>t+r.proj,0)||1, arc=(col,len)=>`<circle cx="75" cy="78" r="58" fill="none" stroke="${col}" stroke-width="10" stroke-linecap="round" stroke-dasharray="${len.toFixed(1)} ${C.toFixed(1)}" transform="rotate(135 75 78)"/>`;
+  const back=keep($("#page")); beat($("#page")); $("#page").innerHTML=`<h1>My home</h1><p class="sub">Day ${Math.floor(b.day)} of ${b.days}</p>
+  <div class="sech"><h2>Summary</h2><a class="more" href="#/bill">Details</a></div>
+  <div class="card sum"><div class="sum3"><div><b>${b.mtd_kwh.toFixed(0)}</b><span>kWh so far</span></div>
+      <div class="arc"><svg viewBox="0 0 150 150" role="img" aria-label="On track for ${b.proj_kwh} kWh${ab?" of the "+ab.limit+" kWh band limit":""}">${arc("#F1EFF2",A)}${arc("var(--acc)",Math.max(A*f,1))}</svg>
+        <div><b class="disp">${ab?Math.round(ab.away_kwh):b.proj_kwh}</b><span>${ab?"kWh to higher rate":"kWh on track"}</span></div></div>
+      <div><b>${W.toLocaleString("en")}</b><span>W now</span></div></div>
+    <div class="mini3">${b.rows.slice(0,3).map(r=>`<div><span>${esc(r.name)}</span><div class="track"><div class="fill" style="width:${(100*r.proj/psum).toFixed(0)}%"></div></div><b>${rm(r.rm)}</b></div>`).join("")}</div>
+    <div class="now ${a.open.length?"att":""}">${mascot("",26)}<span>${a.open.length?(n=>`${plural(n,"appliance")} need${n>1?"":"s"} attention`)(new Set(a.open.map(i=>i.device)).size):plugs.length?`Now: ${on.length} of ${plural(plugs.length,"plug")} reporting`:"No plugs added yet"}</span></div></div>
+  ${plugs.length?"":'<div class="card mut" style="margin-top:12px">Put a plug in pairing mode, then use Add plug. If you are using the simulated house, check that it is running.</div>'}
+  ${a.open.length?`<div class="sech"><h2>Needs attention</h2></div>${a.open.map(i=>alertCard(i,a.now,true)).join("")}`:""}
+  <div class="sech"><h2>Devices</h2><button class="more" id="find">+ Add plug</button></div>
+  ${[...rooms].map(([room,ds])=>`<div class="lab room">${esc(room)}</div><div class="card list">${ds.map(d=>`<div class="lrow" data-go="${esc(d.id)}" role="link" tabindex="0">
+    <span class="ring ${d.online&&d.watts>=1?"on":""}" aria-hidden="true">${ICON[d.type]||"🔌"}</span>
+    <span class="lmain"><span class="t">${esc(d.name)}</span>
+      <span class="mut">${d.real?(SRC[d.source]||"No power sensor found"):!d.online?"No signal from this plug":d.learning?"Learning its normal":`Today ${d.today_kwh.toFixed(2)} kWh`}</span></span>
+    <span class="rw"><b>${watts(d)}</b>${badge(d)}</span></div>`).join("")}</div>`).join("")}`;
+  back(); bindAck(()=>devices(id));
+  $("#find").onclick=wizard;
+  document.querySelectorAll("[data-go]").forEach(r=>{const go=()=>{location.hash="#/device/"+encodeURIComponent(r.dataset.go)};r.onclick=go;r.onkeydown=e=>{if(e.key==="Enter")go()}});
+  if(id)sheet(id);
+}
+
+let lastRooms=[];
+function wizard(){                                          // 1 find a plug, 2 its password, 3 name/room/type, 4 done: the same pairing calls as before
+  let step=1, found=[], types={}, key="", pick=null, pw="", err="", done={}, tick=null;
+  const head=t=>`<div class="wiz"><div class="row"><div class="prog" role="progressbar" aria-label="Step ${step} of 4" aria-valuemin="1" aria-valuemax="4" aria-valuenow="${step}"><i style="width:${step*25}%"></i></div><button class="x" data-mx aria-label="Close">&times;</button></div><h1>${t}</h1></div>`;
+  const scan=async()=>{try{const r=await api("/api/discover"), k=JSON.stringify(r.found.map(p=>p.id));types=r.types;if(k!==key){key=k;found=r.found;if(step===1)draw()}}catch(e){}};
+  function draw(){
+    const m=$("#modal .modal"); if(!m)return;
+    if(step===1){
+      m.innerHTML=head("Which plug are we adding?")+`<div class="radar" aria-hidden="true">📡</div>
+        <div style="text-align:center"><b>${found.length?"Plugs found nearby":"Scanning for plugs in pairing mode…"}</b><div class="mut">${found.length?"Choose the one to add.":"Fit a plug on the house screen and it will show up here."}</div>
+        ${err?`<div class="werr">${err}</div>`:""}</div>
+        ${found.map((p,i)=>`<button class="opt" data-i="${i}"><span>📶 ${esc(p.ssid)}</span><span class="mut">Add &rarr;</span></button>`).join("")}`;
+      m.querySelectorAll("[data-i]").forEach(b=>b.onclick=()=>{pick=found[+b.dataset.i];step=2;err="";draw()});
+    }else if(step===2){
+      m.innerHTML=head("What's the password on the plug?")+`<div class="wform"><div class="mut" style="text-align:center">📶 ${esc(pick.ssid)}</div>
+        <input id="w-pw" class="bigin" inputmode="numeric" maxlength="64" autocomplete="off" aria-label="Password shown on the plug" value="${esc(pw)}"><div class="werr" role="status">${err}</div></div>
+        <div class="wnav"><button id="w-back">Back</button><button class="pri" id="w-next">Next</button></div>`;
+      const next=()=>{pw=$("#w-pw").value.trim();err=pw?"":"Enter the password shown on the plug.";if(pw)step=3;draw()};
+      $("#w-pw").focus(); $("#w-pw").onkeydown=e=>{if(e.key==="Enter")next()}; $("#w-next").onclick=next; $("#w-back").onclick=()=>{step=1;err="";draw()};
+    }else if(step===3){
+      m.innerHTML=head("What is it plugged into?")+`<div class="wform"><label for="w-ty">Appliance</label><select id="w-ty">${Object.entries(types).map(([k,l])=>`<option value="${k}">${esc(l)}</option>`).join("")}</select>
+        <label for="w-nm">Name (optional)</label><input id="w-nm" maxlength="40" placeholder="e.g. Washing machine">
+        <label for="w-rm">Room</label><input id="w-rm" maxlength="30" list="w-rooms" placeholder="Choose or type a room"><datalist id="w-rooms">${lastRooms.map(r=>`<option value="${esc(r)}">`).join("")}</datalist>
+        <div class="werr" id="w-msg" role="status"></div></div>
+        <div class="wnav"><button id="w-back">Back</button><button class="pri" id="w-go">Add plug</button></div>`;
+      $("#w-back").onclick=()=>{step=2;draw()};
+      $("#w-go").onclick=async()=>{
+        const msg=$("#w-msg"), ty=$("#w-ty").value; done={name:$("#w-nm").value.trim()||types[ty],room:$("#w-rm").value.trim()};
+        $("#w-go").disabled=true; msg.style.color="var(--mut)"; msg.textContent="Connecting…";
+        const res=await api("/api/pair",{deviceId:pick.id,password:pw,name:$("#w-nm").value,type:ty,room:done.room});
+        if(res.error){step=1;key="";err="That plug is no longer in pairing mode.";return draw()}
+        for(let i=0;i<20;i++){
+          await wait(500); const st=(await api("/api/pair?id="+encodeURIComponent(pick.id))).status;
+          if(st==="paired"){step=4;return draw()}
+          if(st==="wrong_password"){step=2;pw="";err="Wrong password. Check the code on the plug and try again.";return draw()}
+        }
+        if($("#w-go")){$("#w-go").disabled=false;msg.style.color="";msg.textContent="The plug did not answer. Is it still in pairing mode?"}
+      };
+    }else{
+      m.innerHTML=head("")+`<div class="bubble">${esc(done.name)} is connected!</div><div style="display:grid;place-items:center">${mascot("cheer",150)}</div>
+        <div class="mut" style="text-align:center;margin-top:14px">${done.room?`Added to ${esc(done.room)}. `:""}${ready.learn?`Alerts start after ${ready.learn} days of readings.`:""}</div>
+        <div class="wnav"><button class="pri" data-mx>Got it</button></div>`;
+    }
+    bindMx();
+  }
+  openModal("","sm",()=>clearInterval(tick)); draw(); scan(); tick=setInterval(()=>{if(step===1)scan()},1000);
+}
+
+function chart(series,real){
+  const W=360,H=170,L=46,B=22,T=10; if(series.length<2)return '<p class="mut">Waiting for readings&hellip;</p>';
+  const t0=series[0][0],t1=series[series.length-1][0],mx=Math.max(10,...series.map(p=>p[1]))*1.1;
+  const X=t=>L+(t-t0)/(t1-t0||1)*(W-L-6),Y=w=>T+(1-w/mx)*(H-T-B);
+  let d="",prev=null; for(const [t,w] of series){d+=(prev===null||t-prev>180?"M":"L")+X(t).toFixed(1)+" "+Y(w).toFixed(1)+" ";prev=t}   // gaps > 3 min break the line
+  const ticks=[0,.5,1].map(f=>`<line x1="${L}" x2="${W-6}" y1="${Y(mx*f)}" y2="${Y(mx*f)}" stroke="var(--line)"/><text x="${L-6}" y="${Y(mx*f)+4}" text-anchor="end" font-size="12" fill="var(--mut)">${Math.round(mx*f)}${f===1?" W":""}</text>`).join("");
+  const hm=real?{hour:"2-digit",minute:"2-digit",second:"2-digit",timeZone:undefined}:Object.assign({hour:"2-digit",minute:"2-digit"},t1-t0>72000?{weekday:"short"}:{});   // real device: local wall-clock time
+  return `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Power in watts over the last hours">${ticks}
+    <path d="${d}" fill="none" stroke="var(--bar)" stroke-width="1.5" stroke-linejoin="round"/>
+    <text x="${L}" y="${H-5}" font-size="12" fill="var(--mut)">${fmt(t0,hm)}</text><text x="${W-6}" y="${H-5}" font-size="12" text-anchor="end" fill="var(--mut)">${fmt(t1,hm)}</text></svg>`;
+}
+
+const shut=()=>{location.hash="#/devices"};
+addEventListener("keydown",e=>{if(e.key!=="Escape")return;if($("#modal").firstChild)closeModal();else if($("#sheet").firstChild)shut()});
+async function sheet(id){
+  const [d,a]=await Promise.all([api("/api/device?id="+encodeURIComponent(id)),api("/api/alerts?device="+encodeURIComponent(id))]);
+  if(location.hash!=="#/device/"+encodeURIComponent(id)||editing||down)return;      // closed, or being typed in, while we were fetching
+  const el=$("#sheet"), old=el.querySelector(".sh"), top=old?old.scrollTop:0, open=!!(el.querySelector("details")||{}).open;
+  const back=keep(el); if(!old)sback=fkey(document.activeElement); beat(el);
+  if(d.error){el.innerHTML=`<div class="scrim" data-close></div><div class="sh"><div class="grab"></div><div class="row"><b>That device was not found.</b><button class="x" data-close aria-label="Close">&times;</button></div></div>`}
+  else{
+  el.innerHTML=`<div class="scrim ${old?"":"in"}" data-close></div><div class="sh ${old?"":"in"}" role="dialog" aria-modal="true" aria-label="${esc(d.name)}" tabindex="-1">
+  <div class="grab"></div>
+  <div class="row shead"><h1><span aria-hidden="true">${ICON[d.type]||"🔌"}</span> ${esc(d.name)}</h1><span class="row">${badge(d)}<button class="x" data-close aria-label="Close">&times;</button></span></div>
+  <div class="mut">${d.real?"This laptop":esc(d.room||"No room set")+" · "+CLASS[d.klass]}${d.info?" · "+esc(d.info):""}</div>
+  <div class="row" style="margin-top:6px"><div><div class="w big ${live(d)}">${watts(d)}</div>
+    ${!d.real&&d.online&&d.voltage_V?`<div class="va">${d.voltage_V} V · ${d.current_A.toFixed(2)} A <span title="Nominal voltage; current worked out from the watts">(not measured)</span></div>`:""}</div>
+</div>
+  <p class="mut" style="margin:4px 0 12px">${d.online?(d.watts>=1?"Using power now":"Connected, idle"):(d.real?"No power sensor found on this machine.":"This plug has stopped reporting. Readings are missing, not zero.")}${d.real&&d.source?" · "+SRC[d.source]:""}</p>
+  <div class="card">${chart(d.series,d.real)}<div class="mut">${d.real?"Live, your local time":`Last ${d.series.length>1?Math.max(1,Math.round((d.series[d.series.length-1][0]-d.series[0][0])/3600)):1} hours`}</div></div>
+  ${d.real?"":`<div class="stats"><div class="card stat"><span class="mut">Today</span><b>${d.today_kwh.toFixed(2)} kWh</b></div><div class="card stat"><span class="mut">This month so far</span><b>${d.month_kwh.toFixed(1)} kWh</b></div></div>
+   <h2 style="font-size:1rem;margin:14px 0 8px">Alerts</h2>${a.open.length?a.open.map(i=>alertCard(i,a.now)).join(""):d.learning?`<div class="card mut">Learning what's normal: day ${d.learning.day} of ${d.learning.of}. Alerts start after that.</div>`:'<div class="card mut">Nothing unusual.</div>'}
+   ${a.closed.length?`<div class="mut" style="margin:10px 0 6px">Recently cleared</div>${a.closed.map(i=>alertCard(i,a.now)).join("")}`:""}`}
+  <details class="card" style="margin-top:12px" ${open?"open":""}><summary>Settings</summary>
+    <div class="field"><label for="nm">Name</label><input id="nm" value="${esc(d.name)}" maxlength="40" style="flex:1;min-width:0"></div>
+    ${d.real?"":`<div class="field"><label for="rm">Room</label><input id="rm" value="${esc(d.room||"")}" maxlength="30" style="flex:1;min-width:0"></div>
+    <div class="field"><label for="kl">When saving energy, this appliance</label><select id="kl">${Object.entries(CLASS).map(([k,l])=>`<option value="${k}" ${k===d.klass?"selected":""}>${l.toLowerCase()}</option>`).join("")}</select></div>`}
+    <div class="field"><button id="save" class="pri" style="flex:1">Save</button></div></details></div>`;
+  el.querySelector(".sh").scrollTop=top;
+  bindAck(()=>sheet(id));
+  const hold=x=>{x.onfocus=()=>editing=true;x.onblur=()=>setTimeout(()=>{editing=document.activeElement.matches("#sheet input,#sheet select")},200)};      // moved to another field: keep holding the refresh
+  const nm=$("#nm"); for(const x of [nm,$("#rm"),$("#kl")])if(x)hold(x);
+  for(const x of [nm,$("#rm")])if(x)x.onkeydown=e=>{if(e.key==="Enter")$("#save").click()};
+  $("#save").onclick=async()=>{await api("/api/device",{id,name:nm.value,room:$("#rm")?$("#rm").value:undefined});editing=false;devices(id)};
+  if($("#kl"))$("#kl").onchange=async e=>{await api("/api/device",{id,klass:e.target.value});editing=false;sheet(id)};
+  }
+  el.querySelectorAll("[data-close]").forEach(x=>x.onclick=shut); back(); if(!old)el.querySelector(".sh").focus({preventScroll:true}); lock();
+}
+
+const sen=r=>(r*100).toFixed(1).replace(".0","")+" sen";
+// Band meter for the Bill and Advisor pages. b is /api/bill; plan is {kwh, rm} when the advisor has a plan with cuts.
+function meter(b,plan,compact){
+  if(!b.bands)return '<div class="card sec"><h2>Band meter</h2><div class="mut">The running server is older than this page. Restart <code>python3 server.py</code> to see the band meter.</div></div>';
+  const B=b.bands, cur=B.findIndex(x=>x[1]===b.rate), a=b.above, w=b.watch, disc=b.discount?" · 25% off":"";
+  const card=(c,lab,big,small)=>`<div class="card stat money ${c}"><span class="lab">${lab}</span><b>${big}</b><span class="mut">${small}</span></div>`;
+  const third=plan?card("down","With this plan",rm(plan.rm),`${Math.round(plan.kwh)} kWh this month`)
+    :w?card("down",`At ${w.limit} kWh or less`,rm(b.proj_rm-w.saving),`Every unit at ${sen(w.rate_below)}`)
+    :card("","Lowest band","&ndash;","There is no cheaper band to reach");
+  if(cur<0||!a)return `<div class="card sec"><h2>Band meter</h2><div class="plain">You are in the highest band</div><div class="mut">Every unit is priced at ${sen(b.rate)}. There is no higher rate to cross into.</div>
+    <div class="stats">${card("","On track",rm(b.proj_rm),`${b.proj_kwh} kWh × ${sen(b.rate)}${disc}`)}${third}</div></div>`;
+  const i0=Math.max(0,cur-2), i1=Math.min(B.length-1,cur+1), x0=i0?B[i0-1][0]:0, x1=B[i1][0];
+  const pc=k=>Math.min(100,Math.max(0,(k-x0)/(x1-x0)*100)).toFixed(2), idx=B.slice(i0,i1+1).map((x,j)=>i0+j);
+  const wd=i=>((B[i][0]-(i?B[i-1][0]:0))/(x1-x0)*100).toFixed(2), near=b.high_kwh>a.limit, away=Math.round(a.away_kwh);
+  return `<div class="card sec"><h2>Band meter</h2>
+    <div class="plain ${near?"near":""}">${away<1?"Right on the line for a higher rate":`About ${away} kWh away from a higher rate`}</div>
+    <div class="mut">Past ${a.limit} kWh, <b>every</b> unit costs ${sen(a.rate_above)} instead of ${sen(b.rate)}.${near?` The estimate (${b.low_kwh} to ${b.high_kwh} kWh) could go either way.`:""}</div>
+    <div class="meter" role="img" aria-label="On track for ${b.proj_kwh} kWh; the next band starts above ${a.limit} kWh">
+      <div class="mrates">${idx.map(i=>`<span class="${i===cur?"cur":""}" style="width:${wd(i)}%">${sen(B[i][1])}</span>`).join("")}</div>
+      <div class="mtrack">${idx.map(i=>`<div class="seg ${i===cur?"cur":i>cur?"hi":""}" style="width:${wd(i)}%"></div>`).join("")}
+        <div class="mrange" style="left:${pc(b.low_kwh)}%;width:${(pc(b.high_kwh)-pc(b.low_kwh)).toFixed(2)}%"></div>
+        <div class="mk sofar" style="left:${pc(b.mtd_kwh)}%"></div><div class="mk" style="left:${pc(b.proj_kwh)}%"></div>${plan?`<div class="mk plan" style="left:${pc(plan.kwh)}%"></div>`:""}</div>
+      <div class="mticks">${x0?"":'<span style="left:0;transform:none">0</span>'}${idx.map(i=>`<span style="left:${pc(B[i][0])}%${i===i1?";transform:translateX(-100%)":""}">${B[i][0]}${i===i1?" kWh":""}</span>`).join("")}</div></div>
+    <div class="legend"><span><i class="sofar"></i>Used so far ${b.mtd_kwh.toFixed(0)} kWh</span><span><i></i>On track ${b.proj_kwh} kWh</span><span><i class="range"></i>Estimate range ±${b.err_pct}%</span>${plan?`<span><i class="plan"></i>With this plan ${Math.round(plan.kwh)} kWh</span>`:""}</div>
+    ${w&&!plan?`<div class="callout">Cut ${Math.ceil(w.cut_kwh)} kWh in ${Math.max(0,Math.round(b.days-b.day))} days to reach the ${sen(w.rate_below)} band and save ${rm(w.saving)}.</div>`:""}
+    ${compact?"":`<div class="stats">${card("","On track",rm(b.proj_rm),`${b.proj_kwh} kWh × ${sen(b.rate)}${disc}`)}
+      ${card("up",`Just past ${a.limit} kWh`,rm(a.rm_over),`${rm(a.rm_over-a.rm_at)} more for one extra kWh`)}${third}</div>
+    <div class="note">Sarawak Energy domestic tariff. Estimated from the replayed house, not a meter reading.</div>`}</div>`;
+}
+async function bill(){
+  const b=await api("/api/bill"); if(down)return; $("#clock").textContent=fmt(b.now);
+  const back=keep($("#page")), psum=b.rows.reduce((t,r)=>t+r.proj,0)||1, top=Math.max(...b.rows.map(r=>r.proj),1), d=b.proj_kwh-b.last_kwh, dr=b.proj_rm-b.last_rm;
+  const moved=b.rows.filter(r=>Math.abs(r.delta_kwh)>=1).sort((x,y)=>Math.abs(y.delta_kwh)-Math.abs(x.delta_kwh));
+  const w=b.watch;
+  $("#page").innerHTML=`<h1>This month's bill</h1><p class="sub">Day ${Math.floor(b.day)} of ${b.days} · ${b.mtd_kwh.toFixed(1)} kWh so far</p>
+  <div class="card"><div class="mut">Estimated bill this month</div><div class="est">RM ${Math.round(b.low_rm)} – ${Math.round(b.high_rm)}</div>
+    <div class="mut">Most likely ${rm(b.proj_rm)} · ${b.proj_kwh} kWh at ${sen(b.rate)}${b.discount?" · 25% off":""}</div>
+    <div class="last"><span class="mut">Last month</span><b>${rm(b.last_rm)}</b><span class="mut">${b.last_kwh} kWh</span></div></div>
+  <p class="note">Usage so far scaled to the full month, ±${b.err_pct}% (error measured on a real household)${b.crosses_band?". The range crosses a price band":""}.</p>
+  ${meter(b)}
+  <div class="card sec"><h2>Where it goes</h2>${b.rows.map(r=>`<div class="bar"><a class="back" href="#/device/${encodeURIComponent(r.id)}">${esc(r.name)}</a>
+     <div class="track"><div class="fill" style="width:${(r.proj/top*100).toFixed(1)}%"></div></div><div class="num"><b>${rm(r.rm)}</b> <span class="mut">${Math.round(100*r.proj/psum)}% · ${Math.round(r.proj)} kWh</span></div></div>`).join("")}
+     <div class="note">Projected for the full month.</div></div>
+  <div class="card sec"><h2>Compared with last month</h2>
+    <div>On track for <b>${Math.abs(d)<3?"about the same usage":Math.abs(d)+" kWh "+(d>0?"more":"less")}</b> than last month${Math.abs(dr)>=0.5?` (about ${rm(Math.abs(dr))} ${dr>0?"more":"less"})`:""}.</div><div style="margin-top:6px">
+    ${moved.length?moved.map(r=>`<div class="cmp"><div><div class="name">${esc(r.name)}</div><div class="mut">${r.last} → ${r.proj} kWh</div></div><div class="num"><b class="${r.delta_kwh>0?"up":"down"}">${r.delta_kwh>0?"+":"−"}${rm(Math.abs(r.delta_rm))}</b><div class="mut">${r.delta_kwh>0?"+":"−"}${Math.abs(r.delta_kwh)} kWh</div></div></div>`).join(""):'<div class="note">No appliance has changed by more than 1 kWh.</div>'}</div></div>
+  <label class="chk"><input type="checkbox" id="disc" ${b.discount?"checked":""}>25% domestic discount (Apr to Dec 2026)</label>
+  <p class="note">Laptop not included: it runs on real time, this bill on the simulated house.</p>`;
+  back(); $("#disc").onchange=async e=>{await api("/api/settings",{discount:e.target.checked});bill()};
+}
+
+let msgs=[], lastTarget=60, busy=false, typer;
+const ASK=["Why is my bill higher?","What uses the most?","Is anything wrong?"];
+function setTarget(v){
+  lastTarget=v; const t=$("#tg"); if(!t)return;
+  t.min=Math.min(40,v); t.max=Math.max(150,v); t.value=v; $("#tgv").textContent="RM "+v;
+  document.querySelectorAll("button[data-t]").forEach(b=>b.classList.toggle("sel",+b.dataset.t===v));
+}
+async function plan(){
+  let p,b; try{[p,b]=await Promise.all([api("/api/advisor?target="+encodeURIComponent(lastTarget)),api("/api/bill")])}catch(e){return net(false)} net(true);
+  if($("#meter"))$("#meter").innerHTML=meter(b,p.cut_kwh?{kwh:p.proj_kwh-p.cut_kwh,rm:p.new_rm}:null,true);
+  if(p.error){$("#plan").innerHTML='<div class="mut">Choose a target between RM5 and RM5,000.</div>';return}
+  const head=p.status==="plan"?`Cut <b>${p.cut_kwh} kWh</b> over the next ${Math.round(p.left_days)} days to land at about <b>${rm(p.new_rm)}</b>.`
+    :p.status==="unreachable"?`${rm(p.target)} is not reachable this month. The lowest reachable is about <b>${rm(p.new_rm)}</b>.`
+    :`On track for about <b>${rm(p.proj_rm)}</b>. No cuts needed${p.status==="under"?`, with ${p.spare_kwh} kWh to spare`:""}.`;
+  const saved=Math.max(p.proj_rm-p.new_rm,0);            // split between appliances by kWh cut: the band rate applies to every unit
+  $("#plan").innerHTML=`${p.fix_first.length?`<div class="card al" style="margin-bottom:12px"><b>Fix these first</b>${p.fix_first.map(a=>`<div>${esc(a.name)}: ${a.title.toLowerCase()}, about ${rm(a.rm_month)} a month.</div>`).join("")}</div>`:""}
+   <div class="tiphead"><div style="display:grid;place-items:center">${mascot(p.cut_kwh?"smart":"cheer",96)}</div><h2>${p.status==="plan"?"Savings tips just for you":p.status==="unreachable"?"Here's the closest we can get":"You're on track!"}</h2></div>
+   <div style="text-align:center;font-size:1.05rem">${head}</div><div class="note" style="text-align:center;margin:4px 0 12px">${rm(p.target)} allows ${p.allowed_kwh} kWh · on track for ${p.proj_kwh} kWh</div>
+   <div class="card tips">${p.rows.map(r=>{const share=r.cut_kwh&&p.cut_kwh?saved*r.cut_kwh/p.cut_kwh:0;
+     return `<div class="tip"><div><div class="name">${esc(r.name)}</div><div class="mut">${r.klass!=="must-run"&&r.cut_kwh?(r.cut_pct>=100?"Keep off":r.cut_pct+"% less")+(r.hours_less?" · "+(r.hours_less<1?Math.round(r.hours_less*60)+" min":r.hours_less+" h")+" less a day":""):CLASS[r.klass]||""}</div></div>
+     <span class="imp ${share>=0.005?"save":""}">${r.klass==="must-run"?"Protected":share>=0.005?"Saves "+rm(share):"No change"}</span></div>`}).join("")}</div>
+   <div class="note">Cuts are shared evenly: "can be reduced" appliances drop by at most half, "must stay on" never. Change a class in the appliance's settings. A calculation, not a prediction.</div>`;
+}
+function drawChat(type){      // type: reveal the newest reply a few characters at a time
+  clearInterval(typer);
+  const av=`<span class="av">${mascot("smart",30)}</span>`;
+  $("#msgs").innerHTML=(msgs.length?msgs.map(m=>m.me?`<div class="msg me"><div class="bub"><div class="t">${esc(m.text)}</div></div></div>`:`<div class="msg bot">${av}<div class="bub"><div class="t">${esc(m.reply)}</div><div class="src">${m.source==="deepseek"?"Phrased by DeepSeek":"Scripted answer"}${m.note?" · "+esc(m.note):""}</div>
+     ${Object.keys(m.facts||{}).length?`<details><summary>Figures used</summary><pre>${esc(JSON.stringify(m.facts,null,1))}</pre></details>`:""}</div></div>`).join(""):'<div class="empty">Ask about your bill, usage or alerts.</div>')
+    +(busy?`<div class="msg bot">${av}<div class="bub typing">Working it out…</div></div>`:"");
+  const box=$("#msgs"), last=msgs[msgs.length-1]||{}, t=type&&!matchMedia("(prefers-reduced-motion:reduce)").matches&&box.querySelector(".msg.bot:last-child .t");
+  $("#chips").innerHTML=(last.next||ASK).map(q=>`<button>${esc(q)}</button>`).join("");
+  box.removeAttribute("aria-busy"); box.scrollTop=1e6;
+  if(!t)return;
+  const full=t.textContent, step=Math.max(2,Math.ceil(full.length/90)), bub=t.closest(".bub"); let i=0;      // about 1.5 s whatever the length
+  t.textContent=""; bub.classList.add("writing"); box.setAttribute("aria-busy","true");                     // screen readers get it once, at the end
+  typer=setInterval(()=>{
+    t.textContent=full.slice(0,i+=step); box.scrollTop=1e6;
+    if(i>=full.length){clearInterval(typer);bub.classList.remove("writing");box.removeAttribute("aria-busy")}
+  },16);
+}
+async function ask(text){
+  text=text.trim(); if(!text||busy)return; msgs.push({me:true,text}); busy=true; drawChat(); $("#q").value="";
+  let r; try{r=await api("/api/chat",{text})}catch(e){r={reply:"Could not reach the app server.",facts:{},source:"scripted"}}
+  msgs.push(r); busy=false; if(!$("#msgs"))return;
+  if(r.intent==="target"&&r.facts.plan){setTarget(r.facts.plan.target);plan()}      // the server decides what was a target
+  drawChat(true);
+}
+async function advisor(){
+  clearInterval(timer); $("#clock").textContent="";      // this page does not refresh, so no live clock
+  $("#page").innerHTML=`<div class="row" style="flex-wrap:wrap;margin-bottom:6px"><h1 style="margin:0">Advisor</h1><span class="aib" id="aib" hidden></span></div>
+  <p class="sub">Pick a target bill and see what to change.</p>
+  <div class="card"><div class="lab">Target bill this month</div><div class="tgv" id="tgv"></div>
+     <input type="range" id="tg" min="40" max="150" step="1" aria-label="Target bill in ringgit">
+     <div class="chips">${[45,50,60].map(v=>`<button data-t="${v}">RM ${v}</button>`).join("")}</div>
+     </div>
+  <div id="plan"></div>
+  <div class="card sec"><div class="chead"><span class="av">${mascot("smart",44)}</span><div><b>Ask the advisor</b><div class="mut">Figures come from your readings.</div></div></div>
+     <div class="msgs" id="msgs" aria-live="polite"></div>
+     <div class="chips" id="chips"></div>
+     <div class="composer"><input id="q" placeholder="e.g. I want to pay RM55" maxlength="500" aria-label="Your question"><button class="send" id="send" aria-label="Send">↑</button></div></div>
+  <div id="meter"></div>`;
+  setTarget(lastTarget);
+  $("#tg").oninput=e=>$("#tgv").textContent="RM "+e.target.value;
+  $("#tg").onchange=e=>{setTarget(+e.target.value);plan()};
+  document.querySelectorAll("button[data-t]").forEach(b=>b.onclick=()=>{setTarget(+b.dataset.t);plan()});
+  $("#chips").onclick=e=>{const b=e.target.closest("button");if(b)ask(b.textContent)};
+  $("#send").onclick=()=>ask($("#q").value); $("#q").onkeydown=e=>{if(e.key==="Enter")ask($("#q").value)};
+  plan(); drawChat();
+  if(!msgs.length)api("/api/chat",{text:"hello"}).then(m=>{if(!msgs.length&&$("#msgs")){msgs.push(m);drawChat(true)}}).catch(()=>{});      // open with the headline
+  api("/api/proof").then(p=>{const el=$("#aib");if(!el)return;el.hidden=false;      // the learned detection model, not the chat
+    el.textContent=p.models_ready?`✨ Learned model active on ${p.models_ready} appliance${p.models_ready>1?"s":""}`:"✨ Learned model still training"});
+}
+
+function realCard(p,T){
+  const r=p.real, ttl=`<summary><h2>${T("real","REAL RECORDINGS")} Fault detection on a real house, held-out year</h2></summary>`;
+  if(!r)return `<details class="card sec" open>${ttl}<div class="mut">Not available from the running server. Restart <code>python3 server.py</code>; if real_proof.json is missing, run <code>python3 real.py</code> first (about 10 minutes).</div></details>`;
+  const D=Object.entries(r.detectors), ours=r.detectors["statistics + neural network"], fix=r.detectors["fixed watt limit"], net=r.detectors["small neural network"];
+  const h=m=>m==null?"–":(m/60).toFixed(1)+" h", pct=v=>(100*v.caught/v.total).toFixed(1)+"%", fa=v=>v.false_per_day?v.false_per_day.toFixed(3):"0";
+  const big=(c,lab,v,extra)=>`<div class="card stat money ${c}"><span class="lab">${lab}</span><b>${v.caught} / ${v.total}</b><span class="mut">${pct(v)} of injected faults caught · median ${h(v.median_minutes)} to alert · ${extra}</span></div>`;
+  return `<details class="card sec" open>${ttl}
+    <div>Real recordings from one house in Canada (AMPds2): ${Object.values(r.appliances).map(esc).join("; ")}. We injected ${ours.total} faults into year ${r.year}, a year the settings were not tuned on. The readings are real; the faults are ours.</div>
+    <div class="stats">${big("down","What this app runs: statistics + neural network",ours,`${fa(ours)} false alerts per appliance per day · ${ours.caught_but_clean_alarmed_too} of these catches are doubtful`)}
+      ${big("up","Fixed watt limit",fix,fix.false_per_day?`${fa(fix)} false alerts per appliance per day`:"no false alerts: it stays quiet and misses most faults")}</div>
+    <div class="tw"><table><tr><th>Detector</th><th class="n">Caught</th><th class="n">Doubtful</th><th class="n">Median time to alert</th><th class="n">False alerts per appliance per day</th></tr>
+    ${D.map(([k,v])=>`<tr class="${v===ours?"best":""}"><td>${k}${v===ours?" (what this app runs)":""}</td><td class="n">${v.caught}/${v.total}</td><td class="n">${v.caught_but_clean_alarmed_too}</td><td class="n">${h(v.median_minutes)}</td><td class="n">${fa(v)}</td></tr>`).join("")}</table></div>
+    <div class="note">"Doubtful" means the untouched recording also raised an alert around the same time, so that catch may be luck. The neural network on its own caught ${net.caught}; the app runs it together with the statistics. This is one house in a cold climate: its heat pump stands in for an air conditioner and there is no recorded water heater. Rerun with <code>python3 real.py</code>.</div></details>`;
+}
+async function openProof(){
+  openModal('<div class="mhead"><h1>How we know: data and limits</h1><button class="x" data-mx aria-label="Close">&times;</button></div><div id="pbody"><p class="mut">Loading…</p></div>');
+  const p=await api("/api/proof"), c=p.comparison, T=(k,l)=>`<span class="tag ${k}">${l}</span>`;
+  const det=c?Object.entries(c.detectors):[], kinds=c?c.labels:[];
+  if(!$("#pbody"))return;
+  $("#pbody").innerHTML=`<p class="sub" style="margin-bottom:0">Every number in this app is one of three things: measured on real data, measured in our own simulation, or assumed. This says which.</p>
+  ${realCard(p,T)}
+  <details class="card sec"><summary><h2>${T("real","REAL DATA")} Bill estimate accuracy</h2></summary>
+    <div>How far off "usage so far, scaled to the month" was on a real household (one home in France, 22 test months, public UCI data):</div>
+    <div class="tw"><table><tr><th>Day of month</th>${p.bill_error.map(e=>`<th class="n">day ${e[0]}</th>`).join("")}</tr><tr><td>Average error</td>${p.bill_error.map(e=>`<td class="n">${e[1]}%</td>`).join("")}</tr></table></div>
+    <div class="note">We also tried six models, including one given the real future weather. None beat this arithmetic, so the bill estimate is arithmetic and we say so.</div></details>
+  <details class="card sec"><summary><h2>${T("real","REAL RULE")} Tariff</h2></summary><div>The bill calculation reproduces Sarawak Energy's three published examples to the cent (450 kWh = RM132.75; 1,000 kWh = RM317.44; RM239.94 after the 25% discount). The rate of your band applies to every unit, which is why the band meter on the Bill page matters.</div></details>
+  <details class="card sec"><summary><h2>${T("sim","SIMULATION")} Fault detection: five detectors, the same hidden changes</h2></summary>
+    ${c?`<div>${c.scenarios} randomized changes to a simulated house (which appliance, what, when and how much are random), plus ${c.clean_days} normal days. No detector is told what changed.</div>
+    <div class="tw"><table><tr><th>Detector</th><th class="n">Caught</th><th class="n">Median time to alert</th><th class="n">False alerts per normal day</th></tr>
+    ${det.map(([k,v])=>`<tr class="${k==="statistics + neural network"?"best":""}"><td>${k}${k==="statistics + neural network"?" (what this app runs)":""}</td><td class="n">${v.caught}/${v.total}</td><td class="n">${v.median_minutes==null?"–":v.median_minutes<120?v.median_minutes+" min":(v.median_minutes/60).toFixed(1)+" h"}</td><td class="n">${v.false_per_day.toFixed(2)}</td></tr>`).join("")}</table></div>
+    <div class="tw" style="margin-top:10px"><table><tr><th>Caught, by kind of change</th>${det.map(([k])=>`<th class="n">${k.replace("statistics + neural network","both").replace("small neural network","neural net").replace("nearest past pattern","nearest").replace("simple statistics","statistics").replace("fixed watt limit","fixed limit")}</th>`).join("")}</tr>
+    ${kinds.map(l=>`<tr><td>${l}</td>${det.map(([,v])=>`<td class="n">${v.by_kind[l]?v.by_kind[l][0]+"/"+v.by_kind[l][1]:"–"}</td>`).join("")}</tr>`).join("")}</table></div>
+    <div class="note"><b>Read this with care.</b> We wrote both the simulated changes and the detectors, so this is not real-world accuracy. The three kinds marked "(new)" were added after the statistics rules were written, to test what the rules did not anticipate: that is where the neural network adds something. Times are long because some changes cannot be seen until the appliance next runs. Rerun with <code>python3 evaluate.py</code>.</div>`
+    :`<div class="mut">No comparison file yet. Run <code>python3 evaluate.py</code> in the app folder (about 3 minutes).</div>`}</details>
+  <details class="card sec"><summary><h2>${T("sim","THIS SESSION")} One problem, one alert</h2></summary>
+    <div class="stats"><div class="card stat"><span class="mut">Raw detections</span><b>${p.counts.raw_detections}</b></div><div class="card stat"><span class="mut">Alerts raised</span><b>${p.counts.incidents}</b></div><div class="card stat"><span class="mut">Notifications sent</span><b>${p.counts.notifications}</b></div></div>
+    <div class="note">An alert updates instead of repeating, clears itself when things return to normal, and reminds at 1 hour, 4 hours and 24 hours only if nobody has acknowledged it.</div></details>
+  <details class="card sec"><summary><h2>${T("real","REAL DEVICE")} This laptop</h2></summary><div>${p.laptop==="battery"?"Whole-laptop power, read from the battery while unplugged.":p.laptop==="chip"?"Processor and graphics chip power, read from the laptop's own sensor while plugged in. It leaves out the screen and other parts, so it is lower than the wall draw.":"No power sensor is readable on this machine right now."} It flows through the same path a real plug would use.</div></details>
+  <details class="card sec"><summary><h2>${T("asm","ASSUMED")} What we made up</h2></summary>
+    <div class="tw"><table><tr><th>Plug</th><th>The plug says its readings are</th><th class="n">Running power the app learned</th></tr>${p.plugs.map(a=>`<tr><td>${esc(a.name)}</td><td>${esc(a.info||"not stated")}</td><td class="n">${a.watts==null?"still learning":a.watts+" W"}</td></tr>`).join("")}</table></div>
+    <ul><li>The wattage and daily schedule of any appliance marked as an assumed model above. For a replayed recording the wattage is measured from it, but which appliance we call it is our choice: the "air cond" is that house's heat pump.</li><li>The advisor's limits: "can be reduced" appliances are cut by at most ${p.max_cut.adjustable*100}%, "must stay on" never.</li>
+    <li>How the RM5 minimum charge interacts with the discount, and the current service-tax rate above 600 kWh (our figure is from a 2020 notice).</li><li>The bill range before day 7 and after day 20 (only days 7 to 20 were measured).</li></ul></details>
+  <details class="card sec"><summary><h2>Limits</h2></summary><ul><li>No real smart plug. Appliances marked "Real recording" replay one house in Canada (AMPds2, winter 2013-14), not a Sarawak home; faults are still injected by us. Only the laptop is a live device.</li><li>The learned model is ${p.models_ready?"trained on the history replayed at start":"still training (it takes a few seconds after start)"}; it has never seen a real fault.</li>
+    <li>The learned layer raised about one false alert per 12 simulated normal days in testing, so its alerts are labelled as less certain.</li><li>The app measures and advises only: it does not switch appliances.</li><li>A new plug is not judged for its first ${p.learn_days} days. On real recordings, 3 days of history gave 0.64 false alerts per appliance per day and 14 days gave 0.13.</li><li>Voltage is the nominal 230 V and current is worked out from the watts; neither is measured.</li><li>A real water heater is usually wired to its own circuit, not a plug, so it would need a clamp sensor rather than a smart plug.</li></ul></details>`;
+}
+
+function soon(){clearInterval(timer);$("#page").innerHTML='<p>Page not found. <a class="back" href="#/devices">Go to Home</a></p>'}
+$("#foot").onclick=openProof;
+$("#sm").innerHTML=mascot("",120); $("#bl").innerHTML=mascot("",32);
+addEventListener("hashchange",route); route(); boot();
+</script></body></html>

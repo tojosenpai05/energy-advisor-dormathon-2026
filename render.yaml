@@ -1,0 +1,17 @@
+# Render Blueprint: one free web service runs the product, which starts the simulated house itself
+# and passes the house screen through the same port (/sim).
+services:
+  - type: web
+    name: energy-advisor
+    runtime: python
+    plan: free
+    region: singapore
+    buildCommand: python3 --version        # standard library only: nothing to install
+    startCommand: python3 server.py         # reads PORT from the environment and binds every interface
+    healthCheckPath: /
+    autoDeployTrigger: commit
+    envVars:
+      - key: DEEPSEEK_API_KEY
+        sync: false                         # typed into the Render dashboard; never stored in the repo
+      - key: LLM_DAILY_CAP
+        value: "300"                        # language-model calls a day before the chat falls back to scripted answers

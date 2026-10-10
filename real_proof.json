@@ -1,0 +1,836 @@
+{
+ "year": 2,
+ "train_days": 35,
+ "clean_days_per_appliance": 56,
+ "detectors": {
+  "fixed watt limit": {
+   "caught": 7,
+   "total": 120,
+   "median_minutes": 1065,
+   "caught_but_clean_alarmed_too": 0,
+   "false_per_day": 0.0,
+   "false_per_day_by_appliance": {
+    "fridge": 0.0,
+    "aircon": 0.0,
+    "tv": 0.0,
+    "washer": 0.0
+   },
+   "by_kind": {
+    "Power up 15-60%": [
+     5,
+     24
+    ],
+    "Drifting up 25%": [
+     2,
+     16
+    ],
+    "Fridge working harder": [
+     0,
+     8
+    ],
+    "Running weak -40%": [
+     0,
+     16
+    ],
+    "Standby creep +25 W": [
+     0,
+     24
+    ],
+    "Left on": [
+     0,
+     16
+    ],
+    "Runs 3 h longer": [
+     0,
+     16
+    ]
+   }
+  },
+  "simple statistics": {
+   "caught": 57,
+   "total": 120,
+   "median_minutes": 225,
+   "caught_but_clean_alarmed_too": 0,
+   "false_per_day": 0.031,
+   "false_per_day_by_appliance": {
+    "fridge": 0.054,
+    "aircon": 0.0,
+    "tv": 0.018,
+    "washer": 0.054
+   },
+   "by_kind": {
+    "Power up 15-60%": [
+     15,
+     24
+    ],
+    "Drifting up 25%": [
+     10,
+     16
+    ],
+    "Fridge working harder": [
+     8,
+     8
+    ],
+    "Running weak -40%": [
+     0,
+     16
+    ],
+    "Standby creep +25 W": [
+     8,
+     24
+    ],
+    "Left on": [
+     16,
+     16
+    ],
+    "Runs 3 h longer": [
+     0,
+     16
+    ]
+   }
+  },
+  "nearest past pattern": {
+   "caught": 27,
+   "total": 120,
+   "median_minutes": 420,
+   "caught_but_clean_alarmed_too": 0,
+   "false_per_day": 0.0,
+   "false_per_day_by_appliance": {
+    "fridge": 0.0,
+    "aircon": 0.0,
+    "tv": 0.0,
+    "washer": 0.0
+   },
+   "by_kind": {
+    "Power up 15-60%": [
+     3,
+     24
+    ],
+    "Drifting up 25%": [
+     1,
+     16
+    ],
+    "Fridge working harder": [
+     5,
+     8
+    ],
+    "Running weak -40%": [
+     0,
+     16
+    ],
+    "Standby creep +25 W": [
+     1,
+     24
+    ],
+    "Left on": [
+     16,
+     16
+    ],
+    "Runs 3 h longer": [
+     1,
+     16
+    ]
+   }
+  },
+  "small neural network": {
+   "caught": 40,
+   "total": 120,
+   "median_minutes": 420,
+   "caught_but_clean_alarmed_too": 4,
+   "false_per_day": 0.027,
+   "false_per_day_by_appliance": {
+    "fridge": 0.0,
+    "aircon": 0.0,
+    "tv": 0.089,
+    "washer": 0.018
+   },
+   "by_kind": {
+    "Power up 15-60%": [
+     7,
+     24
+    ],
+    "Drifting up 25%": [
+     4,
+     16
+    ],
+    "Fridge working harder": [
+     4,
+     8
+    ],
+    "Running weak -40%": [
+     2,
+     16
+    ],
+    "Standby creep +25 W": [
+     5,
+     24
+    ],
+    "Left on": [
+     16,
+     16
+    ],
+    "Runs 3 h longer": [
+     2,
+     16
+    ]
+   }
+  },
+  "statistics + neural network": {
+   "caught": 66,
+   "total": 120,
+   "median_minutes": 245,
+   "caught_but_clean_alarmed_too": 4,
+   "false_per_day": 0.054,
+   "false_per_day_by_appliance": {
+    "fridge": 0.054,
+    "aircon": 0.0,
+    "tv": 0.107,
+    "washer": 0.054
+   },
+   "by_kind": {
+    "Power up 15-60%": [
+     16,
+     24
+    ],
+    "Drifting up 25%": [
+     11,
+     16
+    ],
+    "Fridge working harder": [
+     8,
+     8
+    ],
+    "Running weak -40%": [
+     2,
+     16
+    ],
+    "Standby creep +25 W": [
+     11,
+     24
+    ],
+    "Left on": [
+     16,
+     16
+    ],
+    "Runs 3 h longer": [
+     2,
+     16
+    ]
+   }
+  }
+ },
+ "appliances": {
+  "fridge": "Kitchen fridge",
+  "aircon": "Heat pump (heats and cools; the closest thing to an air conditioner)",
+  "tv": "TV + recorder + amplifier",
+  "washer": "Clothes washer"
+ },
+ "tuning_year": {
+  "fixed watt limit": {
+   "caught": 3,
+   "total": 120,
+   "median_minutes": 1920,
+   "caught_but_clean_alarmed_too": 0,
+   "false_per_day": 0.0,
+   "false_per_day_by_appliance": {
+    "fridge": 0.0,
+    "aircon": 0.0,
+    "tv": 0.0,
+    "washer": 0.0
+   },
+   "by_kind": {
+    "Power up 15-60%": [
+     3,
+     24
+    ],
+    "Drifting up 25%": [
+     0,
+     16
+    ],
+    "Fridge working harder": [
+     0,
+     8
+    ],
+    "Running weak -40%": [
+     0,
+     16
+    ],
+    "Standby creep +25 W": [
+     0,
+     24
+    ],
+    "Left on": [
+     0,
+     16
+    ],
+    "Runs 3 h longer": [
+     0,
+     16
+    ]
+   }
+  },
+  "simple statistics": {
+   "caught": 73,
+   "total": 120,
+   "median_minutes": 200,
+   "caught_but_clean_alarmed_too": 22,
+   "false_per_day": 0.174,
+   "false_per_day_by_appliance": {
+    "fridge": 0.125,
+    "aircon": 0.411,
+    "tv": 0.071,
+    "washer": 0.089
+   },
+   "by_kind": {
+    "Power up 15-60%": [
+     18,
+     24
+    ],
+    "Drifting up 25%": [
+     13,
+     16
+    ],
+    "Fridge working harder": [
+     8,
+     8
+    ],
+    "Running weak -40%": [
+     2,
+     16
+    ],
+    "Standby creep +25 W": [
+     14,
+     24
+    ],
+    "Left on": [
+     13,
+     16
+    ],
+    "Runs 3 h longer": [
+     5,
+     16
+    ]
+   }
+  },
+  "nearest past pattern": {
+   "caught": 30,
+   "total": 120,
+   "median_minutes": 420,
+   "caught_but_clean_alarmed_too": 0,
+   "false_per_day": 0.013,
+   "false_per_day_by_appliance": {
+    "fridge": 0.0,
+    "aircon": 0.018,
+    "tv": 0.018,
+    "washer": 0.018
+   },
+   "by_kind": {
+    "Power up 15-60%": [
+     6,
+     24
+    ],
+    "Drifting up 25%": [
+     2,
+     16
+    ],
+    "Fridge working harder": [
+     2,
+     8
+    ],
+    "Running weak -40%": [
+     0,
+     16
+    ],
+    "Standby creep +25 W": [
+     0,
+     24
+    ],
+    "Left on": [
+     16,
+     16
+    ],
+    "Runs 3 h longer": [
+     4,
+     16
+    ]
+   }
+  },
+  "small neural network": {
+   "caught": 47,
+   "total": 120,
+   "median_minutes": 540,
+   "caught_but_clean_alarmed_too": 15,
+   "false_per_day": 0.071,
+   "false_per_day_by_appliance": {
+    "fridge": 0.018,
+    "aircon": 0.071,
+    "tv": 0.107,
+    "washer": 0.089
+   },
+   "by_kind": {
+    "Power up 15-60%": [
+     11,
+     24
+    ],
+    "Drifting up 25%": [
+     3,
+     16
+    ],
+    "Fridge working harder": [
+     5,
+     8
+    ],
+    "Running weak -40%": [
+     0,
+     16
+    ],
+    "Standby creep +25 W": [
+     6,
+     24
+    ],
+    "Left on": [
+     15,
+     16
+    ],
+    "Runs 3 h longer": [
+     7,
+     16
+    ]
+   }
+  },
+  "statistics + neural network": {
+   "caught": 84,
+   "total": 120,
+   "median_minutes": 210,
+   "caught_but_clean_alarmed_too": 30,
+   "false_per_day": 0.214,
+   "false_per_day_by_appliance": {
+    "fridge": 0.107,
+    "aircon": 0.464,
+    "tv": 0.143,
+    "washer": 0.143
+   },
+   "by_kind": {
+    "Power up 15-60%": [
+     19,
+     24
+    ],
+    "Drifting up 25%": [
+     13,
+     16
+    ],
+    "Fridge working harder": [
+     8,
+     8
+    ],
+    "Running weak -40%": [
+     2,
+     16
+    ],
+    "Standby creep +25 W": [
+     19,
+     24
+    ],
+    "Left on": [
+     15,
+     16
+    ],
+    "Runs 3 h longer": [
+     8,
+     16
+    ]
+   }
+  }
+ },
+ "without_calibration": {
+  "fixed watt limit": {
+   "caught": 7,
+   "total": 120,
+   "median_minutes": 1065,
+   "caught_but_clean_alarmed_too": 0,
+   "false_per_day": 0.0,
+   "false_per_day_by_appliance": {
+    "fridge": 0.0,
+    "aircon": 0.0,
+    "tv": 0.0,
+    "washer": 0.0
+   },
+   "by_kind": {
+    "Power up 15-60%": [
+     5,
+     24
+    ],
+    "Drifting up 25%": [
+     2,
+     16
+    ],
+    "Fridge working harder": [
+     0,
+     8
+    ],
+    "Running weak -40%": [
+     0,
+     16
+    ],
+    "Standby creep +25 W": [
+     0,
+     24
+    ],
+    "Left on": [
+     0,
+     16
+    ],
+    "Runs 3 h longer": [
+     0,
+     16
+    ]
+   }
+  },
+  "simple statistics": {
+   "caught": 82,
+   "total": 120,
+   "median_minutes": 270,
+   "caught_but_clean_alarmed_too": 60,
+   "false_per_day": 0.625,
+   "false_per_day_by_appliance": {
+    "fridge": 1.0,
+    "aircon": 0.089,
+    "tv": 1.018,
+    "washer": 0.393
+   },
+   "by_kind": {
+    "Power up 15-60%": [
+     16,
+     24
+    ],
+    "Drifting up 25%": [
+     11,
+     16
+    ],
+    "Fridge working harder": [
+     8,
+     8
+    ],
+    "Running weak -40%": [
+     7,
+     16
+    ],
+    "Standby creep +25 W": [
+     15,
+     24
+    ],
+    "Left on": [
+     16,
+     16
+    ],
+    "Runs 3 h longer": [
+     9,
+     16
+    ]
+   }
+  },
+  "nearest past pattern": {
+   "caught": 27,
+   "total": 120,
+   "median_minutes": 420,
+   "caught_but_clean_alarmed_too": 0,
+   "false_per_day": 0.0,
+   "false_per_day_by_appliance": {
+    "fridge": 0.0,
+    "aircon": 0.0,
+    "tv": 0.0,
+    "washer": 0.0
+   },
+   "by_kind": {
+    "Power up 15-60%": [
+     3,
+     24
+    ],
+    "Drifting up 25%": [
+     1,
+     16
+    ],
+    "Fridge working harder": [
+     5,
+     8
+    ],
+    "Running weak -40%": [
+     0,
+     16
+    ],
+    "Standby creep +25 W": [
+     1,
+     24
+    ],
+    "Left on": [
+     16,
+     16
+    ],
+    "Runs 3 h longer": [
+     1,
+     16
+    ]
+   }
+  },
+  "small neural network": {
+   "caught": 40,
+   "total": 120,
+   "median_minutes": 420,
+   "caught_but_clean_alarmed_too": 4,
+   "false_per_day": 0.027,
+   "false_per_day_by_appliance": {
+    "fridge": 0.0,
+    "aircon": 0.0,
+    "tv": 0.089,
+    "washer": 0.018
+   },
+   "by_kind": {
+    "Power up 15-60%": [
+     7,
+     24
+    ],
+    "Drifting up 25%": [
+     4,
+     16
+    ],
+    "Fridge working harder": [
+     4,
+     8
+    ],
+    "Running weak -40%": [
+     2,
+     16
+    ],
+    "Standby creep +25 W": [
+     5,
+     24
+    ],
+    "Left on": [
+     16,
+     16
+    ],
+    "Runs 3 h longer": [
+     2,
+     16
+    ]
+   }
+  },
+  "statistics + neural network": {
+   "caught": 86,
+   "total": 120,
+   "median_minutes": 245,
+   "caught_but_clean_alarmed_too": 59,
+   "false_per_day": 0.612,
+   "false_per_day_by_appliance": {
+    "fridge": 1.0,
+    "aircon": 0.089,
+    "tv": 0.964,
+    "washer": 0.393
+   },
+   "by_kind": {
+    "Power up 15-60%": [
+     16,
+     24
+    ],
+    "Drifting up 25%": [
+     12,
+     16
+    ],
+    "Fridge working harder": [
+     8,
+     8
+    ],
+    "Running weak -40%": [
+     9,
+     16
+    ],
+    "Standby creep +25 W": [
+     17,
+     24
+    ],
+    "Left on": [
+     15,
+     16
+    ],
+    "Runs 3 h longer": [
+     9,
+     16
+    ]
+   }
+  }
+ },
+ "learning": {
+  "3": {
+   "caught": 89,
+   "total": 120,
+   "median_minutes": 120,
+   "caught_but_clean_alarmed_too": 68,
+   "false_per_day": 0.643,
+   "false_per_day_by_appliance": {
+    "fridge": 1.268,
+    "aircon": 0.214,
+    "tv": 0.821,
+    "washer": 0.268
+   },
+   "by_kind": {
+    "Power up 15-60%": [
+     16,
+     24
+    ],
+    "Drifting up 25%": [
+     14,
+     16
+    ],
+    "Fridge working harder": [
+     8,
+     8
+    ],
+    "Running weak -40%": [
+     8,
+     16
+    ],
+    "Standby creep +25 W": [
+     20,
+     24
+    ],
+    "Left on": [
+     14,
+     16
+    ],
+    "Runs 3 h longer": [
+     9,
+     16
+    ]
+   }
+  },
+  "7": {
+   "caught": 81,
+   "total": 120,
+   "median_minutes": 205,
+   "caught_but_clean_alarmed_too": 40,
+   "false_per_day": 0.317,
+   "false_per_day_by_appliance": {
+    "fridge": 0.607,
+    "aircon": 0.196,
+    "tv": 0.339,
+    "washer": 0.125
+   },
+   "by_kind": {
+    "Power up 15-60%": [
+     19,
+     24
+    ],
+    "Drifting up 25%": [
+     12,
+     16
+    ],
+    "Fridge working harder": [
+     8,
+     8
+    ],
+    "Running weak -40%": [
+     6,
+     16
+    ],
+    "Standby creep +25 W": [
+     16,
+     24
+    ],
+    "Left on": [
+     13,
+     16
+    ],
+    "Runs 3 h longer": [
+     7,
+     16
+    ]
+   }
+  },
+  "14": {
+   "caught": 76,
+   "total": 120,
+   "median_minutes": 305,
+   "caught_but_clean_alarmed_too": 0,
+   "false_per_day": 0.134,
+   "false_per_day_by_appliance": {
+    "fridge": 0.214,
+    "aircon": 0.089,
+    "tv": 0.143,
+    "washer": 0.089
+   },
+   "by_kind": {
+    "Power up 15-60%": [
+     17,
+     24
+    ],
+    "Drifting up 25%": [
+     13,
+     16
+    ],
+    "Fridge working harder": [
+     8,
+     8
+    ],
+    "Running weak -40%": [
+     2,
+     16
+    ],
+    "Standby creep +25 W": [
+     14,
+     24
+    ],
+    "Left on": [
+     16,
+     16
+    ],
+    "Runs 3 h longer": [
+     6,
+     16
+    ]
+   }
+  },
+  "21": {
+   "caught": 74,
+   "total": 120,
+   "median_minutes": 275,
+   "caught_but_clean_alarmed_too": 15,
+   "false_per_day": 0.116,
+   "false_per_day_by_appliance": {
+    "fridge": 0.071,
+    "aircon": 0.0,
+    "tv": 0.304,
+    "washer": 0.089
+   },
+   "by_kind": {
+    "Power up 15-60%": [
+     16,
+     24
+    ],
+    "Drifting up 25%": [
+     11,
+     16
+    ],
+    "Fridge working harder": [
+     8,
+     8
+    ],
+    "Running weak -40%": [
+     2,
+     16
+    ],
+    "Standby creep +25 W": [
+     15,
+     24
+    ],
+    "Left on": [
+     16,
+     16
+    ],
+    "Runs 3 h longer": [
+     6,
+     16
+    ]
+   }
+  }
+ }
+}

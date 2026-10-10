@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Energy advisor: know which appliance is costing you</title>
+<meta name="description" content="A per-appliance home energy advisor for Sarawak households. Live demo: a simulated house replaying real appliance recordings.">
+<style>
+/* same palette and type as app.html */
+:root{--bg:#F9F9FB;--fg:#090C13;--mut:#626363;--line:#E0E2E8;--acc:#039E7A;--accbg:#EAFFFA;--ink:#262828;--link:#0F5B4A;--warn:#9C5200;--bad:#C22F3D;color-scheme:light;
+  --disp:"Nunito","Poppins","Noto Sans",system-ui,sans-serif}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:100%/1.55 "Noto Sans",Inter,"SF Pro Text",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+h1,h2,h3,.disp{font-family:var(--disp);font-weight:900;letter-spacing:-.02em;margin:0}
+a{color:var(--link)}:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.wrap{max-width:760px;margin:0 auto;padding:0 max(20px,env(safe-area-inset-left)) 0 max(20px,env(safe-area-inset-right))}
+.top{display:flex;align-items:center;justify-content:space-between;padding-top:14px;min-height:62px}
+.brand{font:900 1.1rem var(--disp);color:inherit;text-decoration:none}.top a.go{font-weight:700;text-decoration:none}
+.hero{text-align:center;padding:26px 0 44px}.hero svg{display:block;margin:0 auto 8px}
+.eye{font-size:.8rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--link);margin:0 0 8px}
+h1{font-size:clamp(2rem,6.4vw,3.1rem);line-height:1.08;text-wrap:balance}
+.lede{font-size:1.08rem;color:var(--mut);max-width:560px;margin:14px auto 0;text-wrap:pretty}
+.live{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:28px 0 22px}
+.tile,.card{background:#fff;border:2px solid var(--line);border-radius:20px}
+.tile{padding:14px 8px}.tile b{display:block;font:900 clamp(1.25rem,4.6vw,1.9rem)/1.1 var(--disp);font-variant-numeric:tabular-nums}
+.tile span{font-size:.84rem;color:var(--mut)}.tile.hot b{color:var(--warn)}
+.cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.btn{display:inline-block;padding:15px 26px;border-radius:18px;border:2px solid var(--line);background:#fff;color:var(--fg);font-weight:800;text-decoration:none;box-shadow:0 3px 0 var(--line);
+  transition:transform .08s,box-shadow .08s}.btn.pri{background:var(--ink);border-color:var(--ink);color:#fff;box-shadow:0 3px 0 #000}
+.btn:active{transform:translateY(3px);box-shadow:none}
+.demo{font-size:.86rem;color:var(--mut);margin:18px auto 0;max-width:520px}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--acc);margin-right:7px;vertical-align:middle;animation:glow 2s ease-out infinite}
+.dot.off{background:var(--bad);animation:none}
+section{padding:34px 0;border-top:2px solid var(--line)}h2{font-size:1.65rem;margin-bottom:6px}.sub{color:var(--mut);margin:0 0 18px}
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:12px;counter-reset:s}
+.steps li{counter-increment:s;display:grid;grid-template-columns:44px 1fr auto;gap:14px;align-items:center;padding:16px}
+.steps li:before{content:counter(s);display:grid;place-items:center;width:44px;height:44px;border-radius:50%;background:var(--accbg);color:var(--link);font:900 1.2rem var(--disp)}
+.steps b{display:block}.steps span{color:var(--mut);font-size:.93rem}.steps a{font-weight:700;white-space:nowrap}
+.cliff{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center;text-align:center;margin:18px 0 10px}
+.cliff .tile{padding:18px 8px}.cliff .arrow{font:900 1.5rem var(--disp);color:var(--mut)}.cliff .over{border-color:var(--warn);background:#FFF8EE}
+.fine{font-size:.86rem;color:var(--mut)}
+.proof{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}.proof .card{padding:18px}
+.proof b{display:block;font:900 1.6rem/1.1 var(--disp);font-variant-numeric:tabular-nums;margin-bottom:6px}.proof span{font-size:.92rem;color:var(--mut)}
+.tag{display:inline-block;font-size:.72rem;font-weight:700;letter-spacing:.05em;border-radius:999px;padding:3px 10px;margin-bottom:10px}
+.tag.real{color:#0B7F63;background:#E3F9F1}.tag.sim{color:#1670B0;background:#E6F2FB}.tag.ass{color:var(--warn);background:#FFF0DC}.tag.no{color:var(--mut);background:#EDEFF1}
+.rsa{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}.rsa .card{padding:18px}.rsa ul{margin:0;padding-left:18px;font-size:.93rem}.rsa li{margin:4px 0}
+footer{padding:26px 0 40px;border-top:2px solid var(--line);text-align:center}footer p{font-size:.84rem;color:var(--mut);margin:16px 0 0}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}}@keyframes glow{from{box-shadow:0 0 0 0 rgba(4,173,134,.45)}to{box-shadow:0 0 0 9px rgba(4,173,134,0)}}
+@keyframes bob{50%{transform:translateY(-8px)}}@keyframes tick{50%{transform:scale(1.08)}}
+.hero>*{animation:rise .5s ease-out both}.hero>:nth-child(n+3){animation-delay:.08s}.hero>:nth-child(n+5){animation-delay:.16s}.hero>:nth-child(n+6){animation-delay:.24s}
+.hero svg{animation:rise .5s ease-out both,bob 2.4s ease-in-out .6s 2}
+.rv{opacity:0;transform:translateY(14px);transition:opacity .45s ease-out,transform .45s ease-out}.rv.in{opacity:1;transform:none}
+.tile b.chg{animation:tick .35s ease-out}
+@media (max-width:520px){.steps li{grid-template-columns:44px 1fr}.steps a{grid-column:2}.live{gap:8px}}
+@media (prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}}
+</style></head>
+<body>
+<div class="wrap">
+<div class="top"><a class="brand" href="/">Energy advisor</a><a class="go" href="/app">Open the app &rarr;</a></div>
+
+<header class="hero">
+  <svg width="96" height="104" viewBox="0 0 120 130" aria-hidden="true"><defs><linearGradient id="mg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#45E6F2"/><stop offset="1" stop-color="#05C896"/></linearGradient></defs>
+    <rect x="43" y="3" width="9" height="24" rx="4.5" fill="#B8C2CB"/><rect x="68" y="3" width="9" height="24" rx="4.5" fill="#B8C2CB"/>
+    <rect x="8" y="22" width="16" height="32" rx="8" fill="#05C896" transform="rotate(-20 16 54)"/><rect x="96" y="22" width="16" height="32" rx="8" fill="#05C896" transform="rotate(20 104 54)"/>
+    <rect x="38" y="102" width="17" height="24" rx="8.5" fill="#05C896"/><rect x="65" y="102" width="17" height="24" rx="8.5" fill="#05C896"/>
+    <rect x="20" y="20" width="80" height="92" rx="38" fill="url(#mg)"/><ellipse cx="60" cy="56" rx="27" ry="21" fill="#fff"/>
+    <circle cx="50" cy="53" r="3.8" fill="#111"/><circle cx="70" cy="53" r="3.8" fill="#111"/><path d="M51 61q9 10 18 0z" fill="#111"/><path d="M56 66.5q4 2.5 8 0-4 3.5-8 0z" fill="#FF7BC8"/>
+    <path d="M63 82l-10 13h7l-3 11 11-14h-7z" fill="#FFE45C"/></svg>
+  <p class="eye">For Sarawak households &middot; prototype</p>
+  <h1>Know which appliance is costing you.</h1>
+  <p class="lede">A plug on each appliance reports its power. The advisor learns what is normal, flags the one that is not, and tells you what to change to hit the bill you want.</p>
+  <div class="live" aria-live="polite">
+    <div class="tile"><b id="s-rm">&ndash;</b><span>on track this month</span></div>
+    <div class="tile"><b id="s-away">&ndash;</b><span>kWh from a higher rate</span></div>
+    <div class="tile" id="t-al"><b id="s-al">&ndash;</b><span id="s-all">alerts open</span></div>
+  </div>
+  <div class="cta"><a class="btn pri" href="/app">Open the app</a><a class="btn" href="/sim">Open the house</a></div>
+  <p class="demo"><span class="dot" id="dot"></span><span id="status">Live from the demo house: a simulation replaying real appliance recordings. No real smart plug.</span></p>
+</header>
+
+<section class="rv">
+  <h2>Try it in a minute</h2>
+  <p class="sub">Two screens: the house (what happens) and the app (what the household sees). The app is only ever sent each plug's readings.</p>
+  <ol class="steps">
+    <li class="card"><div><b>Leave the water heater on</b><span>In the house, set the water heater's switch to On.</span></div><a href="/sim" target="_blank" rel="noopener">Open the house &rarr;</a></li>
+    <li class="card"><div><b>Watch one alert appear</b><span>The app names the appliance, the kind of problem, what it costs a month and what to do. It was never told what you did.</span></div><a href="/app#/devices" target="_blank" rel="noopener">Open the app &rarr;</a></li>
+    <li class="card"><div><b>Ask for the bill you want</b><span>Type &ldquo;I want to pay RM 45&rdquo;. You get what to cut, by how much, and what must stay on.</span></div><a href="/app#/advisor" target="_blank" rel="noopener">Open the advisor &rarr;</a></li>
+  </ol>
+</section>
+
+<section class="rv">
+  <h2>Why it matters</h2>
+  <p class="sub">Sarawak Energy prices every unit at the rate of the band your month's total lands in. One unit over a line reprices the whole bill.</p>
+  <div class="cliff">
+    <div class="tile"><b id="c-at">&ndash;</b><span id="c-atl">at the line</span></div>
+    <div class="arrow" aria-hidden="true">&rarr;</div>
+    <div class="tile over"><b id="c-over">&ndash;</b><span id="c-overl">one unit over</span></div>
+  </div>
+  <p class="fine" id="c-note">&nbsp;</p>
+  <p class="fine">Sources: the band rule, from Sarawak Energy's <a href="https://www.sarawakenergy.com/media-info/announcements-publications/electric-discount-faq" target="_blank" rel="noopener">discount FAQ</a> (the app's tariff code reproduces its three worked examples to the cent); the 25% domestic discount for April to December 2026, covering about 714,000 domestic customers, from their <a href="https://www.sarawakenergy.com/media-info/media-releases/2026/sarawak-energy-domestic-customers-to-receive-25-electricity-bill-discount" target="_blank" rel="noopener">media release</a>.</p>
+</section>
+
+<section class="rv">
+  <h2>Proof</h2>
+  <p class="sub" id="p-sub">Measured, not claimed.</p>
+  <div class="proof">
+    <div class="card"><span class="tag real">REAL RECORDINGS</span><b id="p-ours">&ndash;</b><span id="p-oursl">&nbsp;</span></div>
+    <div class="card"><span class="tag real">REAL RECORDINGS</span><b id="p-fa">&ndash;</b><span id="p-fal">&nbsp;</span></div>
+    <div class="card"><span class="tag real">REAL HOUSEHOLD</span><b id="p-err">&ndash;</b><span id="p-errl">&nbsp;</span></div>
+  </div>
+  <p class="fine" style="margin-top:14px">The readings are real; the faults were injected by us, into one house. <a href="/app#/proof">Full tables, data and limits &rarr;</a></p>
+</section>
+
+<section class="rv">
+  <h2>Real, simulated, assumed</h2>
+  <p class="sub">What this demo is and is not.</p>
+  <div class="rsa">
+    <div class="card"><span class="tag real">REAL</span><ul id="r-real"><li>Appliance power recordings the house replays (AMPds2, one house in Canada)</li><li>Sarawak Energy's domestic tariff and its band rule</li></ul></div>
+    <div class="card"><span class="tag sim">SIMULATED</span><ul><li>The house, its plugs and its fast clock</li><li>Every fault: we inject it, the app has to find it</li></ul></div>
+    <div class="card"><span class="tag ass">ASSUMED</span><ul id="r-ass"><li>The water heater's wattage and schedule</li></ul></div>
+    <div class="card"><span class="tag no">NOT BUILT</span><ul><li>Real smart plug hardware</li><li>Switching appliances off remotely</li></ul></div>
+  </div>
+</section>
+
+<footer class="rv">
+  <div class="cta"><a class="btn pri" href="/app">Open the app</a><a class="btn" href="/sim">Open the house</a></div>
+  <p>Prototype built for Hackerdorm 2026, Track 1: Predictive Model.</p>
+</footer>
+</div>
+<script>
+const $=id=>document.getElementById(id), get=async p=>{const r=await fetch(p);if(!r.ok)throw 0;return r.json()};
+const rm=v=>"RM "+v.toFixed(2);
+function set(id,text){const el=$(id);if(el.textContent===text)return;const first=el.textContent==="–";el.textContent=text;      // tick when a live figure moves
+  if(!first){el.classList.remove("chg");void el.offsetWidth;el.classList.add("chg")}}
+
+async function live(){
+  try{
+    const [b,a]=await Promise.all([get("/api/bill"),get("/api/alerts")]);
+    if(!b.proj_kwh){$("status").textContent="The demo house is starting. Figures appear in a moment.";return}
+    set("s-rm",rm(b.proj_rm)); set("s-al",String(a.open.length)); $("s-all").textContent=a.open.length===1?"alert open":"alerts open"; $("t-al").classList.toggle("hot",a.open.length>0);
+    const u=b.above;                                             // null in the top band: no line left to cross
+    set("s-away",u?String(Math.round(u.away_kwh)):"0");
+    if(u){
+      set("c-at",rm(u.rm_at)); set("c-over",rm(u.rm_over)); $("c-atl").textContent=u.limit+" kWh"; $("c-overl").textContent=(u.limit+1)+" kWh";
+      $("c-note").textContent=`The demo house's next line: one more unit past ${u.limit} kWh adds ${rm(u.rm_over-u.rm_at)} to the bill`+(b.discount?`, with the ${Math.round(b.discount*100)}% discount applied.`:".");
+    }
+    $("dot").className="dot"; $("status").textContent="Live from the demo house: a simulation replaying real appliance recordings. No real smart plug.";
+  }catch(e){$("dot").className="dot off"; $("status").textContent="The demo server is not reachable right now."}
+}
+async function proof(){
+  try{
+    const p=await get("/api/proof"), r=p.real;
+    if(r){
+      const ours=r.detectors["statistics + neural network"], fix=r.detectors["fixed watt limit"];
+      $("p-sub").textContent=`Detectors run on real recordings from year ${r.year}, a year their settings were not tuned on.`;
+      $("p-ours").textContent=`${ours.caught} of ${ours.total}`;
+      $("p-oursl").textContent=`injected faults caught (${ours.caught_but_clean_alarmed_too} of those catches are doubtful). A fixed watt limit caught ${fix.caught}.`;
+      $("p-fa").textContent=`1 in ${Math.floor(1/ours.false_per_day)} days`;
+      $("p-fal").textContent=`false alerts per appliance (${ours.false_per_day} a day), with a median ${(ours.median_minutes/60).toFixed(1)} h from fault to alert.`;
+    }
+    const e=p.bill_error, f=e[0], l=e[e.length-1];
+    $("p-err").textContent=`${f[1]}% → ${l[1]}%`;
+    $("p-errl").textContent=`error of the month's bill estimate, from day ${f[0]} to day ${l[0]}, measured on one real household's data.`;
+    if(p.laptop)$("r-real").insertAdjacentHTML("beforeend","<li>This machine's own power reading, live</li>");
+    const cut=p.max_cut&&p.max_cut.adjustable;
+    if(cut)$("r-ass").insertAdjacentHTML("beforeend",`<li>How far an appliance may be cut: at most ${Math.round(cut*100)}% for one that can be reduced, never for one that must stay on</li>`);
+  }catch(e){}
+}
+live(); setInterval(live,5000); proof();
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target)}}),{threshold:.12});
+document.querySelectorAll(".rv").forEach(el=>io.observe(el));
+</script>
+</body></html>

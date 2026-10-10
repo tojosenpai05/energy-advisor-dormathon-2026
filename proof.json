@@ -1,0 +1,227 @@
+{
+ "scenarios": 64,
+ "clean_days": 24,
+ "detectors": {
+  "fixed watt limit": {
+   "caught": 23,
+   "total": 64,
+   "median_minutes": 285,
+   "false_during_scenarios": 0,
+   "false_clean": 0,
+   "false_per_day": 0.0,
+   "by_kind": {
+    "Left on": [
+     0,
+     8
+    ],
+    "Power up 15-60%": [
+     6,
+     8
+    ],
+    "Drifting up 25%": [
+     8,
+     8
+    ],
+    "Fridge working harder": [
+     0,
+     8
+    ],
+    "Heater overload": [
+     8,
+     8
+    ],
+    "Running weak -40% (new)": [
+     0,
+     8
+    ],
+    "Standby creep +25 W (new)": [
+     1,
+     8
+    ],
+    "Runs 3 h longer (new)": [
+     0,
+     8
+    ]
+   }
+  },
+  "simple statistics": {
+   "caught": 54,
+   "total": 64,
+   "median_minutes": 155,
+   "false_during_scenarios": 0,
+   "false_clean": 0,
+   "false_per_day": 0.0,
+   "by_kind": {
+    "Left on": [
+     8,
+     8
+    ],
+    "Power up 15-60%": [
+     8,
+     8
+    ],
+    "Drifting up 25%": [
+     8,
+     8
+    ],
+    "Fridge working harder": [
+     8,
+     8
+    ],
+    "Heater overload": [
+     8,
+     8
+    ],
+    "Running weak -40% (new)": [
+     0,
+     8
+    ],
+    "Standby creep +25 W (new)": [
+     6,
+     8
+    ],
+    "Runs 3 h longer (new)": [
+     8,
+     8
+    ]
+   }
+  },
+  "nearest past pattern": {
+   "caught": 56,
+   "total": 64,
+   "median_minutes": 360,
+   "false_during_scenarios": 0,
+   "false_clean": 0,
+   "false_per_day": 0.0,
+   "by_kind": {
+    "Left on": [
+     8,
+     8
+    ],
+    "Power up 15-60%": [
+     7,
+     8
+    ],
+    "Drifting up 25%": [
+     8,
+     8
+    ],
+    "Fridge working harder": [
+     8,
+     8
+    ],
+    "Heater overload": [
+     8,
+     8
+    ],
+    "Running weak -40% (new)": [
+     3,
+     8
+    ],
+    "Standby creep +25 W (new)": [
+     6,
+     8
+    ],
+    "Runs 3 h longer (new)": [
+     8,
+     8
+    ]
+   }
+  },
+  "small neural network": {
+   "caught": 62,
+   "total": 64,
+   "median_minutes": 330,
+   "false_during_scenarios": 0,
+   "false_clean": 2,
+   "false_per_day": 0.08,
+   "by_kind": {
+    "Left on": [
+     8,
+     8
+    ],
+    "Power up 15-60%": [
+     8,
+     8
+    ],
+    "Drifting up 25%": [
+     8,
+     8
+    ],
+    "Fridge working harder": [
+     8,
+     8
+    ],
+    "Heater overload": [
+     8,
+     8
+    ],
+    "Running weak -40% (new)": [
+     8,
+     8
+    ],
+    "Standby creep +25 W (new)": [
+     6,
+     8
+    ],
+    "Runs 3 h longer (new)": [
+     8,
+     8
+    ]
+   }
+  },
+  "statistics + neural network": {
+   "caught": 62,
+   "total": 64,
+   "median_minutes": 200,
+   "false_during_scenarios": 0,
+   "false_clean": 2,
+   "false_per_day": 0.08,
+   "by_kind": {
+    "Left on": [
+     8,
+     8
+    ],
+    "Power up 15-60%": [
+     8,
+     8
+    ],
+    "Drifting up 25%": [
+     8,
+     8
+    ],
+    "Fridge working harder": [
+     8,
+     8
+    ],
+    "Heater overload": [
+     8,
+     8
+    ],
+    "Running weak -40% (new)": [
+     8,
+     8
+    ],
+    "Standby creep +25 W (new)": [
+     6,
+     8
+    ],
+    "Runs 3 h longer (new)": [
+     8,
+     8
+    ]
+   }
+  }
+ },
+ "seconds": 441,
+ "labels": [
+  "Drifting up 25%",
+  "Fridge working harder",
+  "Heater overload",
+  "Left on",
+  "Power up 15-60%",
+  "Running weak -40% (new)",
+  "Runs 3 h longer (new)",
+  "Standby creep +25 W (new)"
+ ]
+}

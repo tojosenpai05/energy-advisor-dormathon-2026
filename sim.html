@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>House simulation</title>
+<style>
+:root{--bg:#0b0f19;--panel:#0f1626;--card:#131b2e;--line:#1e293b;--fg:#f1f5f9;--mut:#94a3b8;--ok:#5fbf8f;--okbg:#14291f;--warn:#e0a54a;--warnbg:#33260f;--sig:#6cb6ff;--sigbg:#13273b}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,sans-serif;padding-bottom:64px}
+button,a.btn{font:inherit;font-size:.86rem;padding:5px 11px;border:1px solid var(--line);background:var(--card);color:var(--fg);border-radius:8px;cursor:pointer;text-decoration:none;display:inline-block;white-space:nowrap}
+button:hover,a.btn:hover{border-color:var(--mut);background:#18233b}button:focus-visible,a:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid var(--sig);outline-offset:2px}
+button.on{background:var(--sigbg);border-color:var(--sig);color:var(--sig);font-weight:600;box-shadow:0 0 0 1px var(--sig),0 0 12px -4px var(--sig)}
+.mut{color:var(--mut);font-size:.82rem}[hidden]{display:none!important}
+header{position:sticky;top:0;z-index:5;background:var(--panel);border-bottom:1px solid var(--line);padding:10px 16px;display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center}
+header h1{font-size:1.05rem;margin:0}header .sub{font-size:.7rem;letter-spacing:.07em;text-transform:uppercase;color:var(--mut)}
+.ctl{display:flex;flex-wrap:wrap;gap:6px;align-items:center}.ctl .mut{margin:0 2px 0 6px}
+.clock{margin-left:auto;font-variant-numeric:tabular-nums;font-weight:600}.clock.err{color:var(--warn)}
+.seg{display:flex}.seg button{flex:1;border-radius:0}.seg button:first-child{border-radius:8px 0 0 8px}.seg button:last-child{border-radius:0 8px 8px 0}.seg button+button{border-left:0}
+main{padding:24px;max-width:1280px;margin:0 auto}
+.rooms{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr));gap:20px;align-items:start}
+.banner{margin:0 0 18px}.oops{border:1px solid var(--warn);background:var(--warnbg);color:var(--warn);border-radius:10px;padding:12px;margin-bottom:18px}
+.room{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px}
+.room>h2{font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);margin:0 0 10px;display:flex;justify-content:space-between;align-items:baseline}
+.room>h2 b{color:var(--fg);font-variant-numeric:tabular-nums;letter-spacing:0;font-size:.9rem}
+.ap{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px}.ap+.ap{margin-top:10px}.ap.fault{border-color:var(--warn)}
+.top{display:flex;justify-content:space-between;align-items:baseline;gap:8px}.top h3{font-size:1rem;margin:0}
+.w{font-size:1.5rem;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+.plug{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;margin:10px 0 2px;padding:8px;border-radius:10px;background:var(--bg);border:1px solid var(--line)}
+.plug .info{flex:1 1 150px;min-width:0;overflow-wrap:anywhere;font-size:.82rem;color:var(--mut)}.plug .info b{color:var(--fg);font-weight:600}
+.badge{font-size:.68rem;font-weight:700;letter-spacing:.05em;border-radius:999px;padding:2px 9px;border:1px solid var(--line);color:var(--mut);white-space:nowrap;display:inline-flex;align-items:center;gap:6px}
+.badge.ok{color:var(--ok);border-color:var(--ok);background:var(--okbg)}.badge.ok::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--ok)}
+.badge.amber{color:var(--warn);border-color:var(--warn);background:var(--warnbg)}
+.badge.sig{color:var(--sig);border-color:var(--sig);background:var(--sigbg)}
+.beacon{position:relative;display:inline-block;width:1.1em;text-align:center}
+.beacon::after{content:"";position:absolute;inset:-3px;border-radius:50%;border:2px solid var(--sig);animation:pulse 1.4s ease-out infinite}
+@keyframes pulse{from{transform:scale(.5);opacity:.9}to{transform:scale(1.9);opacity:0}}
+@media (prefers-reduced-motion:reduce){.beacon::after{animation:none;opacity:.5}}
+.lbl{font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);margin:10px 0 4px;display:flex;justify-content:space-between}.lbl b{color:var(--fg);letter-spacing:0;text-transform:none}
+input[type=range]{width:100%;accent-color:var(--sig);margin:0}
+.real{border-color:var(--ok)}
+details.drawer{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--panel);border-top:1px solid var(--line);max-height:70vh;overflow:auto}
+.drawer summary{cursor:pointer;padding:12px 16px;font-weight:600;display:flex;gap:10px;align-items:center;list-style:none}.drawer summary::-webkit-details-marker{display:none}
+.drawer summary::after{content:"▴";margin-left:auto;color:var(--mut)}.drawer[open] summary::after{content:"▾"}
+.drawer .in{padding:0 16px 16px;max-width:1240px;margin:0 auto}
+.fgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px}
+.fbox{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px}.fbox h4{margin:0 0 6px;font-size:.9rem}
+.faults{display:flex;flex-wrap:wrap;gap:6px}.faults button{font-size:.8rem;padding:3px 9px}.faults button.on{background:var(--warnbg);border-color:var(--warn);color:var(--warn);box-shadow:0 0 0 1px var(--warn),0 0 12px -4px var(--warn)}
+ul{list-style:none;padding:0;margin:0}li{padding:5px 0;border-bottom:1px solid var(--line);font-size:.86rem}
+h5{font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);margin:16px 0 6px}
+</style></head><body>
+<header>
+  <div><div class="sub">Screen A &middot; stands in for the real house</div><h1>House simulation</h1></div>
+  <div class="ctl"><button id="pause"></button><span class="mut">Speed</span><span class="seg" id="speeds"></span>
+    <span class="mut">Sensor</span><button id="noise">Noise</button><button id="dropout">Dropouts</button></div>
+  <div class="clock" id="clock" role="status">&hellip;</div>
+</header>
+<main>
+  <div class="oops" id="oops" role="alert" hidden></div>
+  <p class="mut banner">Each appliance says where its readings come from. A real recording is replayed minute by minute from one house in Canada (AMPds2, winter 2013-14), with your switch and power setting applied on top. An assumed model uses made-up wattage and schedule. The laptop is a live reading from this machine.</p>
+  <div class="rooms" id="rooms"></div>
+</main>
+<details class="drawer" id="drawer">
+  <summary>🛠️ Developer &amp; Fault Testing Panel <span class="badge amber" id="fcount" hidden></span></summary>
+  <div class="in">
+    <p class="mut" style="margin:0 0 10px">Faults are injected into an appliance's readings here. The app is never told: it only receives each plug's readings.</p>
+    <div class="fgrid" id="faults"></div>
+    <h5>What I changed</h5><ul id="log"></ul>
+  </div>
+</details>
+<script>
+const SPEEDS=[[1,"Real-time"],[60,"1 min/s"],[600,"10 min/s"],[3600,"1 h/s"]];
+const FL={drift:"Drifting up +25%",cycling:"Working harder",overload:"Overload",weak:"Running weak −40%",standby:"Standby creep +25 W",longer:"Runs 3 h longer",offline:"Goes offline"};
+const ML={auto:"Auto",on:"On",off:"Off"};
+const SRC={battery:"Whole laptop, measured from the battery.",chip:"Processor and graphics chip only (plugged in). Unplug for the whole laptop."};
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fmt=t=>new Date(t*1000).toLocaleString("en-GB",{timeZone:"UTC",weekday:"short",day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"});
+const post=b=>fetch("/api/sim",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(b)}).then(tick);
+function logText(l){
+  if(l.fault==="cleared")return "fault cleared";
+  if(l.fault.startsWith("mode:"))return "switched to "+ML[l.fault.slice(5)];
+  if(l.fault.startsWith("remote:"))return "plug switched "+l.fault.slice(7).toLowerCase()+" from the app";
+  if(l.fault.startsWith("power:"))return "power set to "+l.fault.slice(6)+" W";
+  return "fault: "+FL[l.fault];
+}
+function plugRow(p,app){                  // the smart plug on this appliance: its state decides the badge and the one action offered
+  const unplug=`<button data-plug>Unplug</button>`;
+  if(p.state==="UNPAIRED")return `<span class="badge">NO PLUG</span><span class="info">The app cannot see this appliance.</span><button data-plug>Fit a smart plug</button>`;
+  if(p.state==="BROADCASTING_WIFI")return `<span class="badge sig"><span class="beacon" aria-hidden="true">📡</span>READY TO PAIR</span>
+    <span class="info">Wi-Fi <b>${esc(p.ssid)}</b><br>Password <b>${esc(p.password)}</b></span>${app?`<a class="btn" href="${esc(app)}#/devices" target="_blank" rel="noopener">Pair device</a>`:""}${unplug}`;
+  if(p.state==="CONNECTING")return `<span class="badge amber">CONNECTING…</span><span class="info">Checking the password with the app.</span>`;
+  return `<span class="badge ok">PAIRED</span><span class="info"><b>${esc(p.label||p.ssid)}</b>${p.relay?"":"<br>Switched off from the app"}</span>${unplug}`;
+}
+function build(s){                        // built once, then only updated, so a slider is never reset mid-drag
+  const rooms=s.rooms||[...new Set(s.plugs.map(p=>p.room))];
+  $("rooms").innerHTML=rooms.map(r=>`<section class="room" data-room="${esc(r)}"><h2>${esc(r)}<b></b></h2>${s.plugs.filter(p=>p.room===r).map(p=>`
+    <div class="ap" data-id="${p.id}"><div class="top"><h3>${esc(p.name)}</h3><span class="w"></span></div>
+      <div class="mut st"></div><div class="plug"></div>
+      <div class="lbl"><span>Appliance switch</span></div><div class="seg">${Object.keys(ML).map(m=>`<button data-m="${m}">${ML[m]}</button>`).join("")}</div>
+      <div class="lbl"><span>Power when running</span><b class="rv"></b></div>
+      <input type="range" min="${Math.round(p.default*.25)}" max="${p.default*2}" step="5" aria-label="${esc(p.name)}: power when running, in watts">
+    </div>`).join("")}</section>`).join("")
+   +`<section class="room"><h2>Study<b></b></h2><div class="ap real" id="lap"><div class="top"><h3>My laptop <span class="badge ok">REAL DEVICE</span></h3><span class="w"></span></div><div class="mut st"></div></div></section>`;
+  $("faults").innerHTML=s.plugs.map(p=>`<div class="fbox" data-id="${p.id}"><h4>${esc(p.name)}</h4><div class="faults">${p.faults.map(f=>`<button data-f="${f}">${FL[f]}</button>`).join("")}</div></div>`).join("");
+  document.querySelectorAll(".ap[data-id]").forEach(c=>{
+    const id=c.dataset.id, r=c.querySelector("input");
+    c.querySelectorAll(".seg button").forEach(b=>b.onclick=()=>post({action:"control",device:id,mode:b.dataset.m}));
+    c.querySelector(".plug").onclick=e=>{if(e.target.closest("[data-plug]"))post({action:"plug",device:id})};
+    r.oninput=()=>{c.querySelector(".rv").textContent=r.value+" W"};
+    r.onchange=()=>post({action:"control",device:id,rated:+r.value});
+  });
+  document.querySelectorAll(".fbox").forEach(c=>c.querySelectorAll("button").forEach(b=>b.onclick=()=>post({action:"fault",device:c.dataset.id,fault:b.classList.contains("on")?null:b.dataset.f})));
+}
+const seen={};
+async function tick(){
+  let s; try{s=await (await fetch("/api/sim")).json()}catch(e){$("clock").textContent="house not reachable";$("clock").className="clock err";return}
+  $("clock").textContent=s.note||fmt(s.now)+(s.paused?"  (paused)":""); $("clock").className="clock"+(s.note?" err":"");
+  $("pause").textContent=s.paused?"Resume":"Pause"; $("pause").onclick=()=>post({action:"paused",value:!s.paused});
+  $("speeds").innerHTML=SPEEDS.map(([v,l])=>`<button class="${s.speed===v?"on":""}" aria-pressed="${s.speed===v}" data-v="${v}">${l}</button>`).join("");
+  $("speeds").querySelectorAll("button").forEach(b=>b.onclick=()=>post({action:"speed",value:+b.dataset.v}));
+  for(const k of ["noise","dropout"]){$(k).className=s[k]?"on":"";$(k).setAttribute("aria-pressed",s[k]);$(k).onclick=()=>post({action:k,value:!s[k]})}
+  for(const p of s.plugs)p.room=p.room||"House";        // a house started before rooms existed still gets drawn
+  try{if(!$("lap"))build(s)}catch(e){$("oops").hidden=false;$("oops").textContent="This page could not draw the house ("+e.message+"). The running house may be older than this page: stop server.py and start it again.";return}
+  const total={};
+  for(const p of s.plugs){
+    const c=document.querySelector(`.ap[data-id="${p.id}"]`); if(!c)continue;
+    total[p.room]=(total[p.room]||0)+(p.watts||0);
+    c.classList.toggle("fault",!!p.fault);
+    c.querySelector(".w").textContent=p.watts==null?"no signal":Math.round(p.watts)+" W";
+    c.querySelector(".st").innerHTML=esc(p.source)+" · "+(p.mode==="auto"?"following its usual schedule":p.mode==="on"?"switched on by you":"switched off by you")+(p.fault?` <span class="badge amber">FAULT: ${esc(FL[p.fault])}</span>`:"");
+    const key=[p.state,p.relay,p.label,s.app].join("|");          // redraw the plug row only when it changes, so its buttons stay clickable
+    if(seen[p.id]!==key){seen[p.id]=key;c.querySelector(".plug").innerHTML=plugRow(p,s.app)}
+    c.querySelectorAll(".seg button").forEach(b=>{b.className=b.dataset.m===p.mode?"on":"";b.setAttribute("aria-pressed",b.dataset.m===p.mode)});
+    const r=c.querySelector("input"); if(document.activeElement!==r){r.value=p.rated;c.querySelector(".rv").textContent=p.rated+" W"}
+    document.querySelectorAll(`.fbox[data-id="${p.id}"] button`).forEach(b=>{b.className=b.dataset.f===p.fault?"on":"";b.setAttribute("aria-pressed",b.dataset.f===p.fault)});
+  }
+  document.querySelectorAll(".room[data-room]").forEach(r=>r.querySelector("h2 b").textContent=Math.round(total[r.dataset.room]||0)+" W");
+  const n=s.plugs.filter(p=>p.fault).length; $("fcount").hidden=!n; $("fcount").textContent=n+" active";
+  const L=$("lap"); L.querySelector(".w").textContent=s.laptop.watts==null?"–":s.laptop.watts.toFixed(1)+" W";
+  L.querySelector(".st").textContent=SRC[s.laptop.source]||"No power sensor found on this machine.";
+  $("log").innerHTML=s.log.length?s.log.map(l=>`<li>${fmt(l.t)} &middot; <b>${esc(l.device)}</b>: ${logText(l)}</li>`).join(""):'<li class="mut">Nothing changed yet.</li>';
+}
+tick(); setInterval(tick,1000);
+</script></body></html>
