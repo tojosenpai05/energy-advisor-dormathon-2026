@@ -1,12 +1,12 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
-    { "source": "/api/bill", "destination": "https://energy-advisor.onrender.com/api/bill" },
-    { "source": "/api/alerts", "destination": "https://energy-advisor.onrender.com/api/alerts" },
-    { "source": "/api/proof", "destination": "https://energy-advisor.onrender.com/api/proof" }
+    { "source": "/api/bill", "destination": "https://energy-advisor-wvkg.onrender.com/api/bill" },
+    { "source": "/api/alerts", "destination": "https://energy-advisor-wvkg.onrender.com/api/alerts" },
+    { "source": "/api/proof", "destination": "https://energy-advisor-wvkg.onrender.com/api/proof" }
   ],
   "redirects": [
-    { "source": "/app", "destination": "https://energy-advisor.onrender.com/app", "permanent": false },
-    { "source": "/sim", "destination": "https://energy-advisor.onrender.com/sim", "permanent": false }
+    { "source": "/app", "destination": "https://energy-advisor-wvkg.onrender.com/app", "permanent": false },
+    { "source": "/sim", "destination": "https://energy-advisor-wvkg.onrender.com/sim", "permanent": false }
   ]
 }

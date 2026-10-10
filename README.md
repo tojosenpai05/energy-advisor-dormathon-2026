@@ -2,6 +2,8 @@
 
 Built for Dormathon 2026 (AI Hackerdorm), Track 1: Predictive Model.
 
+**Live demo: https://energy-advisor-wvkg.onrender.com** ([app](https://energy-advisor-wvkg.onrender.com/app), [house simulation](https://energy-advisor-wvkg.onrender.com/sim)). It runs on a free server that sleeps after 15 minutes without visitors, so the first visit can take about a minute.
+
 A per-appliance home energy advisor for a Sarawak household. Two programs: **the product** (`server.py`), which knows no appliances, and **a simulated house** (`house.py`) whose plugs replay real appliance recordings and reach the product only over HTTP, as real plugs would. Plus one live device (this laptop).
 Python standard library only; nothing to install.
 
@@ -25,7 +27,7 @@ The simulated house, which stands in for real smart plugs:
 
 <img src="docs/house.png" width="760" alt="House simulation screen with one card per appliance, its plug state, a switch and a power slider">
 
-**Try it in a minute.** Start it (see Run), then with the house speed at 1 min/s:
+**Try it in a minute.** Open the live demo, or start it yourself (see Run). Then, with the house speed at 1 min/s:
 1. In the app, open Advisor and pick RM 45. You get a cut plan per appliance.
 2. On the house screen, switch the Water heater to **On**. The app raises "On at an unusual time" in about 25 seconds, with its cost per month.
 3. In the Developer & Fault Testing Panel, press **Goes offline** for the TV. "Plug not reporting" appears in about 12 seconds.
@@ -127,7 +129,7 @@ DEEPSEEK_API_KEY=... python3 server.py   # chat is rephrased by DeepSeek (also r
 
 ## Start page on Vercel (optional)
 `site/` is the start page as a static site, so it loads at once even while the Render service is asleep. In Vercel: Add New > Project, pick this repo, set Root Directory to `site`, framework preset Other, Deploy.
-- `site/vercel.json` passes the page's three read-only figure calls on to the Render service and redirects `/app` and `/sim` there. **It assumes the service is at `https://energy-advisor.onrender.com`: if Render gave it another address, change all five lines.**
+- `site/vercel.json` passes the page's three read-only figure calls on to the Render service and redirects `/app` and `/sim` there. It points at this project's Render service, `https://energy-advisor-wvkg.onrender.com`: for your own copy, change all five lines to your service's address.
 - Vercel cannot run the app itself: it runs short stateless functions, and the app is one long-running process that keeps its readings in memory.
 
 ## Data
