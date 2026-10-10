@@ -130,6 +130,7 @@ function set(id,text){const el=$(id);if(el.textContent===text)return;const first
   if(!first){el.classList.remove("chg");void el.offsetWidth;el.classList.add("chg")}}
 
 async function live(){
+  if(document.hidden)return;                                     // a tab left open in the background asks for nothing
   try{
     const [b,a]=await Promise.all([get("/api/bill"),get("/api/alerts")]);
     if(!b.proj_kwh){$("status").textContent="The demo house is starting. Figures appear in a moment.";return}
@@ -141,7 +142,7 @@ async function live(){
       $("c-note").textContent=`The demo house's next line: one more unit past ${u.limit} kWh adds ${rm(u.rm_over-u.rm_at)} to the bill`+(b.discount?`, with the ${Math.round(b.discount*100)}% discount applied.`:".");
     }
     $("dot").className="dot"; $("status").textContent="Live from the demo house: a simulation replaying real appliance recordings. No real smart plug.";
-  }catch(e){$("dot").className="dot off"; $("status").textContent="The demo server is not reachable right now."}
+  }catch(e){$("dot").className="dot off"; $("status").textContent="The demo server is asleep or unreachable. It wakes within a minute or two of a visit; this page keeps trying."}
 }
 async function proof(){
   try{

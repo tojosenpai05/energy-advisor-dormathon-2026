@@ -8,7 +8,7 @@ Python standard library only; nothing to install.
 python3 server.py                 # product + simulated house (house.py on the next port), then open the two screens below
 python3 server.py --no-house      # product alone      |  python3 house.py   house alone (--app URL --port N)
 python3 server.py --port 8799     # another port      |  --lan  to reach it from a phone on the same Wi-Fi
-python3 -m unittest               # 36 tests, about 30 s
+python3 -m unittest               # 37 tests, about 30 s
 python3 evaluate.py               # reruns the detector comparison (about 7 min), writes proof.json
 python3 real.py                   # same detectors on the real recordings (about 10 min), writes real_proof.json; needs the AMPds2 files, see Data
 DEEPSEEK_API_KEY=... python3 server.py   # chat is rephrased by DeepSeek (also read from a .env above this folder); without it the chat is scripted
@@ -23,6 +23,11 @@ DEEPSEEK_API_KEY=... python3 server.py   # chat is rephrased by DeepSeek (also r
 - Anyone with the link can use every control, including the fault buttons. Language-model calls are capped at `LLM_DAILY_CAP` a day (default 300), then the chat answers from the script.
 - The free plan stops the service after 15 minutes without visitors. The next visit waits about a minute, and the house then replays its history from the start. Nothing is stored between runs.
 - "This laptop" shows no reading on a host: a server has no laptop power sensor.
+
+## Start page on Vercel (optional)
+`site/` is the start page as a static site, so it loads at once even while the Render service is asleep. In Vercel: Add New > Project, pick this repo, set Root Directory to `site`, framework preset Other, Deploy.
+- `site/vercel.json` passes the page's three read-only figure calls on to the Render service and redirects `/app` and `/sim` there. **It assumes the service is at `https://energy-advisor.onrender.com`: if Render gave it another address, change all five lines.**
+- Vercel cannot run the app itself: it runs short stateless functions, and the app is one long-running process that keeps its readings in memory.
 
 ## Two screens
 **Simulation.** Rooms, each holding its appliances: live watts, the smart plug's state (no plug, ready to pair with its Wi-Fi name and password, connecting, paired), a switch (Auto / On / Off) and a power slider. Fault buttons and the log of what you changed sit in the Developer & Fault Testing Panel at the bottom; the app only ever receives each plug's readings.

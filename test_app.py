@@ -430,6 +430,12 @@ class LaptopReaderTests(unittest.TestCase):
 class RelayTests(unittest.TestCase):
     """One public port serves both programs: the product passes /sim and /api/sim on to the house."""
 
+    def test_every_page_the_server_offers_exists(self):
+        for path, name in server.PAGES.items():
+            self.assertTrue((server.HERE / name).is_file(), (path, name))
+        hosts = json.loads((server.HERE / "site" / "vercel.json").read_text())      # the Vercel copy points at one service only
+        self.assertEqual(len({r["destination"].split("/")[2] for r in hosts["rewrites"] + hosts["redirects"]}), 1)
+
     def test_house_screen_is_reachable_through_the_product_port(self):
         import threading, urllib.request, urllib.error
         from http.server import ThreadingHTTPServer

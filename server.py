@@ -440,7 +440,7 @@ class App:
         return None
 
 
-PAGES = {"/": "landing.html", "/app": "app.html"}
+PAGES = {"/": "site/index.html", "/app": "app.html"}      # site/ is also what Vercel serves on its own (site/vercel.json)
 
 
 def make_handler(app, pages=PAGES):
