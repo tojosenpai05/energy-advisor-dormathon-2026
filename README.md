@@ -9,7 +9,8 @@ python3 server.py                 # product + simulated house (house.py on the n
 python3 server.py --no-house      # product alone      |  python3 house.py   house alone (--app URL --port N)
 python3 server.py --port 8799     # another port      |  --lan  to reach it from a phone on the same Wi-Fi
 python3 -m unittest               # 36 tests, about 30 s
-python3 evaluate.py               # reruns the detector comparison (about 3 min), writes proof.json
+python3 evaluate.py               # reruns the detector comparison (about 7 min), writes proof.json
+python3 real.py                   # same detectors on the real recordings (about 10 min), writes real_proof.json; needs the AMPds2 files, see Data
 DEEPSEEK_API_KEY=... python3 server.py   # chat is rephrased by DeepSeek (also read from a .env above this folder); without it the chat is scripted
 ```
 - Start page (what it is, live figures, how to try it): http://127.0.0.1:8765/
@@ -29,11 +30,11 @@ DEEPSEEK_API_KEY=... python3 server.py   # chat is rephrased by DeepSeek (also r
 **App**, one topic per page:
 | Page | What it does |
 |---|---|
-| Devices | Paired plugs, live watts, today's usage, online/offline, alerts that need attention. Add a plug: pick its Wi-Fi, enter its password, give it a name, type and room. A new plug shows "Learning: day N of 14" before it is judged. |
-| Appliance | Live chart, today and month so far, its alerts with explanation and cost, rename, set its room and class, switch the plug on or off. |
+| Home | Paired plugs by room, live watts, today's usage, online/offline, alerts that need attention. Add a plug: pick its Wi-Fi, enter its password, give it a name, type and room. A new plug shows "Learning: day N of 14" before it is judged. |
+| Appliance (a sheet over Home) | Live chart, today and month so far, its alerts with explanation and cost, rename, set its room and class. The app does not switch appliances on or off. |
 | Bill | Month estimate as a range, split by appliance, compared with last month, and the band watch. |
 | Advisor | "I want to pay RM X": what to cut and what must stay on, plus a chat. |
-| Proof & limits | What is real, simulated or assumed, with the numbers. |
+| How we know (a panel, opened from the app's footer) | What is real, simulated or assumed, with the numbers. |
 
 ## How it works
 | Part | File | What it really is |
@@ -47,10 +48,11 @@ DEEPSEEK_API_KEY=... python3 server.py   # chat is rephrased by DeepSeek (also r
 
 Detect: named statistical checks first (fast, they say what kind), then the neural network as a second layer for patterns the checks did not anticipate. One alert per problem: it updates, clears itself, and can be acknowledged.
 
-## Results (see the Proof page for the full tables)
-- **Real data:** month-estimate error on a real household: 12.5% at day 7, 8.3% at day 15, 4.8% at day 20. No model beat this arithmetic.
+## Results (the "How we know" panel has the full tables)
+- **Real data:** month-estimate error on a real household (UCI household power data, one home in France): 12.5% at day 7, 8.3% at day 15, 4.8% at day 20. No model beat this arithmetic.
 - **Real rule:** the tariff code reproduces Sarawak Energy's three published examples to the cent. A band's rate applies to every unit.
 - **Simulation, 64 randomized hidden changes + 24 normal days:** fixed watt limit 23/64; simple statistics 54/64; small neural network 62/64; both together (what the app runs) 62/64 at a median 3.3 h, about one false alert per 12 normal days.
+- **Real recordings, injected faults (`real_proof.json`):** AMPds2, four appliances, settings tuned on year 1 and reported on year 2. Of 120 injected faults: fixed watt limit 7; simple statistics 57; small neural network 40; both together 66 at a median 4.1 h, with about 0.054 false alerts per appliance per day (one per appliance every 18 days). 4 of the 66 are doubtful: the untouched recording alarmed in the same two days. Weakest: running weak 2/16.
 
 ## Data credit
 `traces.json` is cut from AMPds2 (Makonin et al., Scientific Data 2016), released under CC BY 4.0. `python3 real.py traces` recuts it from the original files, which are not in this repo.
@@ -61,3 +63,7 @@ Detect: named statistical checks first (fast, they say what kind), then the neur
 - The water heater's wattage and schedule and the advisor's cut limits are assumptions. The replayed house is Canadian, not a Sarawak home, and its faults are injected by us.
 - The language model (DeepSeek) only rephrases an answer the calculation already produced; it was checked against the live service on 2026-10-11. Nothing checks that its wording keeps every figure unchanged.
 - Storage is in memory: restarting the server regenerates the same simulated history.
+
+## Data
+- `traces.json` is a 19-week cut of **AMPds2**, licensed CC BY 4.0: Makonin, S., Ellert, B., Bajić, I. V. & Popowich, F. "Electricity, water, and natural gas consumption of a residential house in Canada from 2012 to 2014." *Scientific Data* 3, 160037 (2016). https://doi.org/10.1038/sdata.2016.37. Changes: only the power column of four meters (fridge, heat pump, TV, washer), cut to 19 weeks from 2013-11-12 and rounded to whole watts.
+- `python3 real.py` and `python3 real.py traces` need the original files (`Electricity_FGE.csv`, `HPE`, `TVE`, `CWE`), which are too large for this repo. Download them from https://doi.org/10.7910/DVN/FIE0S4 into `data/ampds2/`, two folders above this one. The app and the tests do not need them.
