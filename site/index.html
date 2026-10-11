@@ -13,6 +13,17 @@ a{color:var(--link)}:focus-visible{outline:3px solid var(--acc);outline-offset:2
 .top{display:flex;align-items:center;justify-content:space-between;padding-top:14px;min-height:62px}
 .brand{font:900 1.1rem var(--disp);color:inherit;text-decoration:none}.top a.go{font-weight:700;text-decoration:none}
 .hero{text-align:center;padding:26px 0 44px}.hero svg{display:block;margin:0 auto 8px}
+/* the mascot, drawn once and reused: he sits on every divider, cheers at the close and keeps you company in the corner */
+:root{--mascot:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 130'><defs><linearGradient id='g' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='%2345E6F2'/><stop offset='1' stop-color='%2305C896'/></linearGradient></defs><rect x='43' y='3' width='9' height='24' rx='4.5' fill='%23B8C2CB'/><rect x='68' y='3' width='9' height='24' rx='4.5' fill='%23B8C2CB'/><rect x='8' y='22' width='16' height='32' rx='8' fill='%2305C896' transform='rotate(-20 16 54)'/><rect x='96' y='22' width='16' height='32' rx='8' fill='%2305C896' transform='rotate(20 104 54)'/><rect x='38' y='102' width='17' height='24' rx='8.5' fill='%2305C896'/><rect x='65' y='102' width='17' height='24' rx='8.5' fill='%2305C896'/><rect x='20' y='20' width='80' height='92' rx='38' fill='url(%23g)'/><ellipse cx='60' cy='56' rx='27' ry='21' fill='%23fff'/><circle cx='50' cy='53' r='3.8' fill='%23111'/><circle cx='70' cy='53' r='3.8' fill='%23111'/><path d='M51 61q9 10 18 0z' fill='%23111'/><path d='M63 82l-10 13h7l-3 11 11-14h-7z' fill='%23FFE45C'/></svg>")}
+section,footer{position:relative}
+section:before,footer:before{content:"";position:absolute;top:-34px;right:12px;width:30px;height:32px;background:var(--mascot) center/contain no-repeat}
+section:nth-of-type(even):before{right:auto;left:12px;transform:scaleX(-1)}
+.mbig{width:104px;height:112px;margin:0 auto 12px;background:var(--mascot) center/contain no-repeat;animation:bob 2.4s ease-in-out infinite}
+.buddy{position:fixed;right:18px;bottom:14px;width:64px;height:70px;background:var(--mascot) center/contain no-repeat;animation:bob 2.4s ease-in-out infinite;pointer-events:none}
+@media (max-width:1240px){.buddy{display:none}}
+.arch svg{display:block;width:100%;height:auto}.shots.one.arch{width:min(1080px,calc(100vw - 40px))}
+.say{display:inline-block;position:relative;margin:0 0 20px;padding:10px 18px;border-radius:18px;background:#fff;border:2px solid var(--line);font:800 1.05rem var(--disp)}
+.say:after{content:"";position:absolute;left:50%;bottom:-9px;width:14px;height:14px;background:#fff;border:solid var(--line);border-width:0 2px 2px 0;transform:translateX(-50%) rotate(45deg)}
 .eye{font-size:.8rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--link);margin:0 0 8px}
 h1{font-size:clamp(2rem,6.4vw,3.1rem);line-height:1.08;text-wrap:balance}
 .lede{font-size:1.08rem;color:var(--mut);max-width:560px;margin:14px auto 0;text-wrap:pretty}
@@ -43,6 +54,13 @@ section{padding:34px 0;border-top:2px solid var(--line)}h2{font-size:1.65rem;mar
 .tag{display:inline-block;font-size:.72rem;font-weight:700;letter-spacing:.05em;border-radius:999px;padding:3px 10px;margin-bottom:10px}
 .tag.real{color:#0B7F63;background:#E3F9F1}.tag.sim{color:#1670B0;background:#E6F2FB}.tag.layer{color:var(--link);background:var(--accbg)}.tag.ass{color:var(--warn);background:#FFF0DC}.tag.no{color:var(--mut);background:#EDEFF1}
 .rsa{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}.rsa .card{padding:18px}.rsa ul{margin:0;padding-left:18px;font-size:.93rem}.rsa li{margin:4px 0}
+.shots{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;width:min(1080px,calc(100vw - 40px));margin:22px 0 0 50%;transform:translateX(-50%)}
+.shots.one{grid-template-columns:1fr;width:min(900px,calc(100vw - 40px))}.shots figure{margin:0}.shots figcaption{font-size:.86rem;color:var(--mut);margin-top:8px}
+.shots img{display:block;width:100%;height:auto;aspect-ratio:430/932;object-fit:cover;object-position:top;border:2px solid var(--line);border-radius:20px;background:#fff}.shots.one img{aspect-ratio:auto}
+.plug{margin:0 0 8px}.plug svg{display:block;width:100%;height:auto}.plug summary svg{max-width:600px;margin:0 auto}.plug summary{list-style:none;cursor:pointer;border-radius:20px}.plug summary::-webkit-details-marker{display:none}
+.plug .hint{display:block;text-align:center;font-size:.86rem;font-weight:700;color:var(--link);text-decoration:underline;margin-top:4px}.plug[open] .hint{visibility:hidden}.plug .card{padding:16px;margin:10px 0}.plug .card .fine{margin:10px 0 0}
+.close{text-align:center}.close h2{font-size:clamp(1.9rem,5.6vw,2.8rem);line-height:1.1;text-wrap:balance;margin-bottom:12px}.close .sub{margin:0}
+.team{display:block;width:132px;height:auto;margin:30px auto 0}
 footer{padding:26px 0 40px;border-top:2px solid var(--line);text-align:center}footer p{font-size:.84rem;color:var(--mut);margin:16px 0 0}
 @keyframes rise{from{opacity:0;transform:translateY(14px)}}@keyframes glow{from{box-shadow:0 0 0 0 rgba(4,173,134,.45)}to{box-shadow:0 0 0 9px rgba(4,173,134,0)}}
 @keyframes bob{50%{transform:translateY(-8px)}}@keyframes tick{50%{transform:scale(1.08)}}
@@ -50,14 +68,17 @@ footer{padding:26px 0 40px;border-top:2px solid var(--line);text-align:center}fo
 .hero svg{animation:rise .5s ease-out both,bob 2.4s ease-in-out .6s 2}
 .rv{opacity:0;transform:translateY(14px);transition:opacity .45s ease-out,transform .45s ease-out}.rv.in{opacity:1;transform:none}
 .tile b.chg{animation:tick .35s ease-out}
+@media (max-width:700px){.shots{grid-template-columns:repeat(2,1fr)}.shots.one{grid-template-columns:1fr}}
 @media (max-width:520px){.steps li{grid-template-columns:44px 1fr}.steps a{grid-column:2}.live{gap:8px}}
 @media (prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}}
 </style></head>
 <body>
+<div class="buddy" aria-hidden="true"></div>
 <div class="wrap">
 <div class="top"><a class="brand" href="/">Energy advisor</a><a class="go" href="/app">Open the app &rarr;</a></div>
 
 <header class="hero">
+  <p class="say">&ldquo;Haiya, this month I expected RM 100. Why so much?&rdquo;</p>
   <svg width="96" height="104" viewBox="0 0 120 130" aria-hidden="true"><defs><linearGradient id="mg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#45E6F2"/><stop offset="1" stop-color="#05C896"/></linearGradient></defs>
     <rect x="43" y="3" width="9" height="24" rx="4.5" fill="#B8C2CB"/><rect x="68" y="3" width="9" height="24" rx="4.5" fill="#B8C2CB"/>
     <rect x="8" y="22" width="16" height="32" rx="8" fill="#05C896" transform="rotate(-20 16 54)"/><rect x="96" y="22" width="16" height="32" rx="8" fill="#05C896" transform="rotate(20 104 54)"/>
@@ -78,16 +99,6 @@ footer{padding:26px 0 40px;border-top:2px solid var(--line);text-align:center}fo
 </header>
 
 <section class="rv">
-  <h2>Try it in a minute</h2>
-  <p class="sub">Two screens: the house (what happens) and the app (what the household sees). The app is only ever sent each plug's readings.</p>
-  <ol class="steps">
-    <li class="card"><div><b>Leave the water heater on</b><span>In the house, set the water heater's switch to On.</span></div><a href="/sim" target="_blank" rel="noopener">Open the house &rarr;</a></li>
-    <li class="card"><div><b>Watch one alert appear</b><span>The app names the appliance, the kind of problem, what it costs a month and what to do. It was never told what you did.</span></div><a href="/app#/devices" target="_blank" rel="noopener">Open the app &rarr;</a></li>
-    <li class="card"><div><b>Ask for the bill you want</b><span>Type &ldquo;I want to pay RM 45&rdquo;. You get what to cut, by how much, and what must stay on.</span></div><a href="/app#/advisor" target="_blank" rel="noopener">Open the advisor &rarr;</a></li>
-  </ol>
-</section>
-
-<section class="rv">
   <h2>Why it matters</h2>
   <p class="sub">Sarawak Energy prices every unit at the rate of the band your month's total lands in. One unit over a line reprices the whole bill.</p>
   <div class="cliff">
@@ -96,6 +107,7 @@ footer{padding:26px 0 40px;border-top:2px solid var(--line);text-align:center}fo
     <div class="tile over"><b id="c-over">&ndash;</b><span id="c-overl">one unit over</span></div>
   </div>
   <p class="fine" id="c-note">&nbsp;</p>
+  <p>About 714,000 domestic customers are on this tariff. The bill arrives as one number: it never says which appliance moved it.</p>
   <table class="bands">
     <caption>Tariff D, domestic: your month's total picks one row</caption>
     <thead><tr><th scope="col">Units in the month</th><th scope="col">Rate on every unit</th></tr></thead>
@@ -115,13 +127,171 @@ footer{padding:26px 0 40px;border-top:2px solid var(--line);text-align:center}fo
 </section>
 
 <section class="rv">
-  <h2>How it detects</h2>
-  <p class="sub">Two layers, both learned from each appliance's own readings. A new plug is not judged until it has 14 days of history.</p>
-  <div class="rsa">
-    <div class="card"><span class="tag layer">LAYER 1 &middot; NAMED CHECKS</span><ul><li>Statistics on what is normal for this appliance: running watts, usual hours, share of time on</li><li>Every 5 minutes it looks for: plug not reporting, on at an unusual time, drawing more power than usual, running more of the time</li><li>Says what kind of problem it is</li></ul></div>
-    <div class="card"><span class="tag layer">LAYER 2 &middot; SMALL NEURAL NETWORK</span><ul><li>An autoencoder (25 &rarr; 5 &rarr; 25), written by hand, one per appliance</li><li>Learns the shape of a normal 24 hours, then flags a day it cannot reconstruct on three hourly checks in a row</li><li>Catches patterns the named checks did not anticipate</li></ul></div>
+  <h2>How it works</h2>
+  <p class="sub">Six steps from one plug's reading to advice you can act on.</p>
+  <details class="plug"><summary>
+    <svg viewBox="10 80 1170 510" role="img" aria-labelledby="plug-t plug-d" font-family="'Noto Sans', Inter, system-ui, sans-serif">
+      <title id="plug-t">Energy Advisor plug, concept</title>
+      <desc id="plug-d">Side view. The measuring plug sits between the wall socket and the appliance's own plug, and reports the appliance's power over Wi-Fi.</desc>
+      <defs>
+        <linearGradient id="plug-body" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#45E6F2"/><stop offset="1" stop-color="#05C896"/></linearGradient>
+        <marker id="plug-tip" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#8C96A3"/></marker>
+      </defs>
+      <rect x="40" y="90" width="44" height="450" fill="#E0E2E8"/>
+      <path d="M40 150l44-44M40 230l44-44M40 310l44-44M40 390l44-44M40 470l44-44M40 540l44-44" stroke="#C9CDD6" stroke-width="3"/>
+      <rect x="84" y="190" width="30" height="230" rx="9" fill="#fff" stroke="#262828" stroke-width="3"/>
+      <rect x="104" y="232" width="10" height="20" fill="#262828"/><rect x="104" y="338" width="10" height="20" fill="#262828"/>
+      <g stroke="#8C96A3" stroke-width="3" stroke-dasharray="7 8" stroke-linecap="round" fill="none">
+        <path d="M250 242H130" marker-end="url(#plug-tip)"/><path d="M264 348H130" marker-end="url(#plug-tip)"/>
+        <path d="M640 242H516" marker-end="url(#plug-tip)"/><path d="M654 348H516" marker-end="url(#plug-tip)"/>
+      </g>
+      <g stroke="#262828" stroke-width="3" stroke-linejoin="round">
+        <rect x="262" y="232" width="70" height="20" rx="3" fill="#B8C2CB"/>
+        <rect x="276" y="338" width="56" height="20" rx="3" fill="#B8C2CB"/><rect x="304" y="338" width="28" height="20" fill="#262828"/>
+        <rect x="330" y="180" width="172" height="240" rx="40" fill="url(#plug-body)"/>
+      </g>
+      <rect x="490" y="232" width="12" height="20" fill="#262828"/><rect x="490" y="338" width="12" height="20" fill="#262828"/>
+      <ellipse cx="412" cy="268" rx="50" ry="38" fill="#fff"/>
+      <circle cx="395" cy="263" r="6" fill="#111"/><circle cx="429" cy="263" r="6" fill="#111"/><path d="M397 278q15 16 30 0z" fill="#111"/>
+      <path d="M63 82l-10 13h7l-3 11 11-14h-7z" transform="translate(412 326) scale(2.6) translate(-60 -82)" fill="#FFE45C"/>
+      <circle cx="470" cy="208" r="6" fill="#EAFFFA" stroke="#039E7A" stroke-width="2.5"/>
+      <g fill="none" stroke="#039E7A" stroke-width="5" stroke-linecap="round">
+        <path d="M402.3 137.3A18 18 0 0 1 427.7 137.3"/><path d="M391 126A34 34 0 0 1 439 126"/><path d="M379.6 114.6A50 50 0 0 1 450.4 114.6"/>
+      </g>
+      <circle cx="415" cy="150" r="5.5" fill="#039E7A"/>
+      <text x="470" y="128" font-size="24" fill="#626363">a reading every minute</text>
+      <g stroke="#262828" stroke-width="3" stroke-linejoin="round">
+        <rect x="652" y="232" width="70" height="20" rx="3" fill="#B8C2CB"/>
+        <rect x="666" y="338" width="56" height="20" rx="3" fill="#B8C2CB"/><rect x="694" y="338" width="28" height="20" fill="#262828"/>
+        <path d="M766 398C766 476 800 506 872 506H1002" fill="none" stroke-width="9" stroke-linecap="round"/>
+        <rect x="720" y="196" width="92" height="208" rx="28" fill="#fff"/>
+      </g>
+      <path d="M748 236v128M766 236v128M784 236v128" stroke="#E0E2E8" stroke-width="4" stroke-linecap="round"/>
+      <g stroke="#262828" stroke-width="3" stroke-linejoin="round" fill="#fff">
+        <rect x="1000" y="170" width="120" height="350" rx="16"/><path d="M1000 290h120" fill="none"/>
+        <path d="M1020 222v40M1020 318v70" fill="none" stroke-linecap="round" stroke-width="5"/>
+      </g>
+      <path d="M30 522H1170" stroke="#E0E2E8" stroke-width="3" stroke-linecap="round"/>
+      <g text-anchor="middle" font-size="30" font-weight="700" fill="#090C13">
+        <text x="110" y="572">Wall socket</text><text x="416" y="572">Energy Advisor plug</text><text x="766" y="572">Appliance's plug</text><text x="1060" y="572">Appliance</text>
+      </g>
+    </svg>
+    <span class="hint">Click the plug to see what is inside</span></summary>
+    <div class="card">
+      <svg viewBox="0 0 1280 520" role="img" aria-labelledby="in-t in-d" font-family="'Noto Sans', Inter, system-ui, sans-serif">
+        <title id="in-t">Inside the Energy Advisor plug, concept</title>
+        <desc id="in-d">Cutaway. Power passes straight through from the wall pins to the appliance's socket. A current sensor and a metering chip work out the watts, an ESP32 Wi-Fi chip sends them, and a small power supply runs the electronics.</desc>
+        <g stroke="#262828" stroke-width="3" stroke-linejoin="round">
+          <rect x="390" y="96" width="92" height="24" rx="3" fill="#B8C2CB"/>
+          <rect x="406" y="396" width="76" height="24" rx="3" fill="#B8C2CB"/><rect x="444" y="396" width="38" height="24" fill="#262828"/>
+          <rect x="480" y="30" width="320" height="460" rx="64" fill="#F1FFFB"/>
+        </g>
+        <rect x="481" y="101" width="298" height="14" fill="#B8C2CB"/><rect x="481" y="401" width="298" height="14" fill="#B8C2CB"/>
+        <rect x="778" y="96" width="22" height="24" fill="#262828"/><rect x="778" y="396" width="22" height="24" fill="#262828"/>
+        <g fill="none" stroke="#039E7A" stroke-width="3" stroke-linejoin="round">
+          <path d="M560 115V150M572 222V270M652 384V320H614M640 190H672M614 290H672M760 170V76"/>
+        </g>
+        <g stroke="#262828" stroke-width="3" stroke-linejoin="round">
+          <rect x="530" y="150" width="110" height="72" rx="8" fill="#fff"/>
+          <rect x="530" y="270" width="84" height="76" rx="8" fill="#262828"/>
+          <rect x="672" y="170" width="104" height="130" rx="10" fill="#fff"/>
+          <rect x="620" y="384" width="64" height="48" rx="8" fill="#FFE45C"/>
+          <rect x="500" y="446" width="120" height="30" rx="6" fill="#fff" stroke-width="2"/>
+        </g>
+        <path d="M548 186q9-18 18 0t18 0M598 178h24M598 194h24" fill="none" stroke="#262828" stroke-width="3" stroke-linecap="round"/>
+        <circle cx="572" cy="308" r="9" fill="#B8C2CB"/>
+        <path d="M694 200h14v-14h14v14h14v-14h14v14" fill="none" stroke="#039E7A" stroke-width="3" stroke-linejoin="round"/>
+        <text x="724" y="262" text-anchor="middle" font-size="22" font-weight="700" fill="#090C13">ESP32</text>
+        <path d="M512 457h60M512 466h96" stroke="#B8C2CB" stroke-width="3" stroke-linecap="round"/>
+        <circle cx="760" cy="66" r="10" fill="#EAFFFA" stroke="#039E7A" stroke-width="3"/>
+        <g fill="none" stroke="#8C96A3" stroke-width="2">
+          <path d="M372 62H416V94M372 186H528M372 304H528M372 462H498M908 66H772M908 232H778M908 364H840V408H802M908 462H652V434"/>
+        </g>
+        <g font-size="30" font-weight="700" fill="#090C13">
+          <g text-anchor="end"><text x="360" y="72">To the wall socket</text><text x="360" y="182">Power supply</text><text x="360" y="300">Metering chip</text><text x="360" y="458">Label</text></g>
+          <text x="920" y="76">Status light</text><text x="920" y="228">Wi-Fi chip</text><text x="920" y="374">To the appliance</text><text x="920" y="458">Current sensor</text>
+        </g>
+        <g font-size="24" fill="#626363">
+          <g text-anchor="end"><text x="360" y="210">runs the electronics</text><text x="360" y="328">works out the watts</text><text x="360" y="486">Wi-Fi name, pairing code</text></g>
+          <text x="920" y="256">sends a reading every minute</text><text x="920" y="486">reads the current drawn</text>
+        </g>
+      </svg>
+      <p class="fine">Power passes straight through; the plug only measures. These are the usual parts of an energy-monitoring plug, drawn as a sketch, not a wiring diagram. A real one would be a certified plug, not something built from mains parts.</p>
+    </div>
+  </details>
+  <p class="fine" style="text-align:center"><span class="tag ass" style="margin:0 6px 0 0">CONCEPT</span>The plug sits between the wall socket and the appliance's own plug. The hardware is not built yet.</p>
+  <div class="proof" style="margin-top:22px">
+    <div class="card"><span class="tag layer">1 &middot; SMART PLUG, HTTP</span><b>Measure</b><span>A plug on each appliance posts its watts every minute.</span></div>
+    <div class="card"><span class="tag layer">2 &middot; STATISTICS</span><b>Learn</b><span>The app builds each appliance's own normal, hour by hour.</span></div>
+    <div class="card"><span class="tag layer">3 &middot; STATISTICS + AI</span><b>Detect</b><span>Statistics check each appliance. A small neural network adds a second layer for what those checks miss.</span></div>
+    <div class="card"><span class="tag layer">4 &middot; NAMED CHECKS</span><b>Name</b><span>The alert says what kind of problem it is.</span></div>
+    <div class="card"><span class="tag layer">5 &middot; BAND TARIFF</span><b>Price</b><span>It becomes ringgit a month on your bill.</span></div>
+    <div class="card"><span class="tag layer">6 &middot; RULES + AI</span><b>Advise</b><span>It says what to do, or plans a cut to hit the bill you want. A language model writes the chat answer from those findings.</span></div>
   </div>
-  <p class="fine" style="margin-top:14px">A finding must persist before it becomes an alert, and each problem gets one alert. On real recordings with 120 injected faults: a fixed watt limit caught 7, layer 1 alone 57, both layers 66.</p>
+  <div class="shots">
+    <figure><a href="shots/home.png" target="_blank"><img src="shots/home.png" width="430" height="932" loading="lazy" alt="Home page with a month summary and an appliance that needs attention"></a><figcaption><b>Home.</b> The month so far and what needs attention.</figcaption></figure>
+    <figure><a href="shots/alert.png" target="_blank"><img src="shots/alert.png" width="430" height="932" loading="lazy" alt="Water heater sheet with its power chart and an alert saying it is on at an unusual time"></a><figcaption><b>An alert.</b> What was seen, what it costs, what to do.</figcaption></figure>
+    <figure><a href="shots/bill.png" target="_blank"><img src="shots/bill.png" width="430" height="932" loading="lazy" alt="Bill page with the month estimate and the band meter"></a><figcaption><b>Bill.</b> The estimate, and how close a dearer band is.</figcaption></figure>
+    <figure><a href="shots/advisor.png" target="_blank"><img src="shots/advisor.png" width="430" height="932" loading="lazy" alt="Advisor page with a target bill and a cut per appliance"></a><figcaption><b>Advisor.</b> Pick a target bill, get a cut per appliance.</figcaption></figure>
+  </div>
+</section>
+
+<section class="rv">
+  <h2>How the tech fits together</h2>
+  <p class="sub">A plug, one server and a web app, joined by plain HTTP.</p>
+  <div class="shots one arch"><figure>
+    <svg viewBox="0 40 1200 500" role="img" aria-labelledby="ar-t ar-d" font-family="'Noto Sans', Inter, system-ui, sans-serif">
+      <title id="ar-t">How the technology fits together</title>
+      <desc id="ar-d">A smart plug sends readings over HTTP to one Python server. Inside the server the readings are stored, checked by statistics and a neural network, turned into alerts, priced with the band tariff and turned into advice. A language model writes the chat wording. The app in the browser reads the results over a JSON API.</desc>
+      <defs><marker id="ar-tip" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#039E7A"/></marker></defs>
+      <g font-size="14" font-weight="700" letter-spacing="1" fill="#626363" text-anchor="middle"><text x="140" y="78">IN THE HOME</text><text x="1065" y="78">WHAT YOU SEE</text></g>
+      <rect x="370" y="60" width="500" height="300" rx="24" fill="#F1FFFB" stroke="#039E7A" stroke-width="2"/>
+      <g fill="#fff" stroke="#E0E2E8" stroke-width="2">
+        <rect x="20" y="97" width="240" height="130" rx="20"/><rect x="950" y="97" width="230" height="130" rx="20"/>
+        <rect x="388" y="120" width="140" height="84" rx="14"/><rect x="548" y="120" width="140" height="84" rx="14"/><rect x="708" y="120" width="140" height="84" rx="14"/>
+        <rect x="548" y="250" width="140" height="84" rx="14"/><rect x="708" y="250" width="140" height="84" rx="14"/>
+        <rect x="478" y="410" width="280" height="112" rx="20" stroke="#8C96A3" stroke-dasharray="7 6"/>
+      </g>
+      <g fill="none" stroke="#039E7A" stroke-width="3" stroke-linecap="round">
+        <path d="M262 162H384" marker-end="url(#ar-tip)"/><path d="M872 162H946" marker-end="url(#ar-tip)"/>
+        <path d="M530 162H544" marker-end="url(#ar-tip)"/><path d="M690 162H704" marker-end="url(#ar-tip)"/>
+        <path d="M778 206V246" marker-end="url(#ar-tip)"/><path d="M706 292H692" marker-end="url(#ar-tip)"/>
+        <path d="M618 340V404" marker-start="url(#ar-tip)" marker-end="url(#ar-tip)"/>
+      </g>
+      <g text-anchor="middle" fill="#090C13">
+        <g font-size="22" font-weight="700"><text x="140" y="143">Smart plug</text><text x="1065" y="143">The app</text><text x="618" y="448">Language model</text></g>
+        <g font-size="19" font-weight="700"><text x="458" y="158">Store</text><text x="618" y="152">Detect</text><text x="778" y="158">Alerts</text><text x="778" y="288">Price</text><text x="618" y="288">Advise</text></g>
+        <g font-size="14" fill="#626363">
+          <text x="140" y="168">measures watts every minute</text><text x="1065" y="168">Home, Bill, Advisor</text>
+          <text x="458" y="180">SQLite</text><text x="618" y="172">statistics +</text><text x="618" y="190">neural network</text><text x="778" y="180">one per problem</text>
+          <text x="778" y="310">band tariff</text><text x="618" y="310">rules</text>
+          <text x="618" y="472">writes the chat answer from the findings</text>
+          <text x="140" y="258">In the demo, simulated plugs</text><text x="140" y="278">replay real recordings.</text>
+          <text x="660" y="378" text-anchor="start">findings down, wording back</text>
+        </g>
+        <g font-size="14" font-weight="700" fill="#0F5B4A">
+          <text x="316" y="148">HTTP + JSON</text><text x="909" y="148">JSON API</text>
+          <text x="140" y="204">ESP32 &middot; simulated today</text><text x="1065" y="204">runs in the browser</text><text x="618" y="500">DeepSeek &middot; outside the server</text>
+        </g>
+        <text x="316" y="184" font-size="13" fill="#626363">pair, readings</text>
+        <text x="392" y="96" text-anchor="start" font-size="16" font-weight="700">The product: one Python server, standard library only</text>
+      </g>
+    </svg>
+    <figcaption><b>How the parts talk.</b> The home and the product share nothing but those HTTP calls: the product is only ever sent each plug's readings.</figcaption>
+  </figure></div>
+</section>
+
+<section class="rv">
+  <h2>Try it in a minute</h2>
+  <p class="sub">Two screens: the house (what happens) and the app (what the household sees). The app is only ever sent each plug's readings.</p>
+  <ol class="steps">
+    <li class="card"><div><b>Leave the water heater on</b><span>In the house, set the water heater's switch to On.</span></div><a href="/sim" target="_blank" rel="noopener">Open the house &rarr;</a></li>
+    <li class="card"><div><b>Watch one alert appear</b><span>The app names the appliance, the kind of problem, what it costs a month and what to do. It was never told what you did.</span></div><a href="/app#/devices" target="_blank" rel="noopener">Open the app &rarr;</a></li>
+    <li class="card"><div><b>Ask for the bill you want</b><span>Type &ldquo;I want to pay RM 45&rdquo;. You get what to cut, by how much, and what must stay on.</span></div><a href="/app#/advisor" target="_blank" rel="noopener">Open the advisor &rarr;</a></li>
+  </ol>
+  <div class="shots one">
+    <figure><a href="shots/house.png" target="_blank"><img src="shots/house.png" width="1280" height="900" loading="lazy" alt="House simulation screen with one card per appliance, its plug state, a switch and a power slider"></a><figcaption><b>The house.</b> It stands in for real smart plugs: one card per appliance.</figcaption></figure>
+  </div>
 </section>
 
 <section class="rv">
@@ -133,6 +303,24 @@ footer{padding:26px 0 40px;border-top:2px solid var(--line);text-align:center}fo
     <div class="card"><span class="tag real">REAL HOUSEHOLD</span><b id="p-err">&ndash;</b><span id="p-errl">&nbsp;</span></div>
   </div>
   <p class="fine" style="margin-top:14px">The readings are real; the faults were injected by us, into one house. <a href="/app#/proof">Full tables, data and limits &rarr;</a></p>
+  <p class="fine">Sources: the appliance recordings are AMPds2, one house in Canada: Makonin, S., Ellert, B., Baji&#263;, I. V. &amp; Popowich, F., <i>Scientific Data</i> 3, 160037 (2016), <a href="https://doi.org/10.1038/sdata.2016.37" target="_blank" rel="noopener">doi:10.1038/sdata.2016.37</a>, CC BY 4.0. The bill-estimate error is measured on one house in France, from the UCI Machine Learning Repository's <a href="https://archive.ics.uci.edu/dataset/235/individual+household+electric+power+consumption" target="_blank" rel="noopener">Individual Household Electric Power Consumption</a> set. The fault counts are our own evaluation on those recordings.</p>
+</section>
+
+<section class="rv close">
+  <div class="mbig" aria-hidden="true"></div>
+  <h2>Detect it, name it, price it, and say what to do. Before the bill arrives.</h2>
+  <p class="sub">The next step is real plugs. They join with the same two calls the simulated ones make.</p>
+</section>
+
+<section class="rv">
+  <p class="eye">For questions</p>
+  <h2>How it detects</h2>
+  <p class="sub">Two layers, both learned from each appliance's own readings. A new plug is not judged until it has 14 days of history.</p>
+  <div class="rsa">
+    <div class="card"><span class="tag layer">LAYER 1 &middot; NAMED CHECKS</span><ul><li>Statistics on what is normal for this appliance: running watts, usual hours, share of time on</li><li>Every 5 minutes it looks for: plug not reporting, on at an unusual time, drawing more power than usual, running more of the time</li><li>Says what kind of problem it is</li></ul></div>
+    <div class="card"><span class="tag layer">LAYER 2 &middot; SMALL NEURAL NETWORK</span><ul><li>An autoencoder (25 &rarr; 5 &rarr; 25), written by hand, one per appliance</li><li>Learns the shape of a normal 24 hours, then flags a day it cannot reconstruct on three hourly checks in a row</li><li>Catches patterns the named checks did not anticipate</li></ul></div>
+  </div>
+  <p class="fine" style="margin-top:14px">A finding must persist before it becomes an alert, and each problem gets one alert. On real recordings with 120 injected faults: a fixed watt limit caught 7, layer 1 alone 57, both layers 66.</p>
 </section>
 
 <section class="rv">
@@ -142,13 +330,29 @@ footer{padding:26px 0 40px;border-top:2px solid var(--line);text-align:center}fo
     <div class="card"><span class="tag real">REAL</span><ul id="r-real"><li>Appliance power recordings the house replays (AMPds2, one house in Canada)</li><li>Sarawak Energy's domestic tariff and its band rule</li></ul></div>
     <div class="card"><span class="tag sim">SIMULATED</span><ul><li>The house, its plugs and its fast clock</li><li>Every fault: we inject it, the app has to find it</li></ul></div>
     <div class="card"><span class="tag ass">ASSUMED</span><ul id="r-ass"><li>The water heater's wattage and schedule</li></ul></div>
+    <div class="card"><span class="tag layer">AI USE</span><ul><li>A small neural network per appliance learns its normal day and flags an unusual one</li><li>A language model writes the Advisor's chat answers from the computed findings; it cannot add figures</li><li>Not AI: the bill, the tariff and the advice are arithmetic and rules</li></ul></div>
     <div class="card"><span class="tag no">NOT BUILT</span><ul><li>Real smart plug hardware</li><li>Switching appliances off remotely</li></ul></div>
   </div>
 </section>
 
 <footer class="rv">
   <div class="cta"><a class="btn pri" href="/app">Open the app</a><a class="btn" href="/sim">Open the house</a></div>
-  <p>Prototype built for Hackerdorm 2026, Track 1: Predictive Model.</p>
+  <svg class="team" viewBox="0 0 400 470" role="img" aria-labelledby="ml-t" font-family="Nunito, Poppins, 'Noto Sans', system-ui, sans-serif">
+    <title id="ml-t">Mayao_Labs logo: a cat's face in a circle</title>
+    <circle cx="200" cy="180" r="158" fill="#fff" stroke="#111" stroke-width="12"/>
+    <g stroke-linejoin="round" stroke-width="16">
+      <path d="M112 168L122 82L192 128Z" fill="#111" stroke="#111"/><path d="M288 168L278 82L208 128Z" fill="#111" stroke="#111"/>
+      
+    </g>
+    <ellipse cx="200" cy="208" rx="108" ry="90" fill="#111"/>
+    <path d="M118 222L66 212M118 238L64 244M282 222L334 212M282 238L336 244" stroke="#111" stroke-width="4" stroke-linecap="round" fill="none"/>
+    <ellipse cx="160" cy="198" rx="16" ry="14" fill="#fff"/><ellipse cx="240" cy="198" rx="16" ry="14" fill="#fff"/>
+    <ellipse cx="160" cy="198" rx="4.5" ry="11" fill="#111"/><ellipse cx="240" cy="198" rx="4.5" ry="11" fill="#111"/>
+    <path d="M190 226h20l-10 11z" fill="#fff" stroke="#fff" stroke-width="5" stroke-linejoin="round"/>
+    
+    <text x="200" y="430" text-anchor="middle" font-size="54" font-weight="900" letter-spacing="-1" fill="#111">Mayao_Labs</text>
+  </svg>
+  <p>Prototype built by Mayao_Labs for Hackerdorm 2026, Track 1: Predictive Model.</p>
 </footer>
 </div>
 <script>

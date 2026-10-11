@@ -20,12 +20,12 @@ Sources: the tariff rule is from Sarawak Energy's [discount FAQ](https://www.sar
 ## What it looks like
 | Home | An alert, explained and priced | Bill | Advisor |
 |---|---|---|---|
-| <img src="docs/home.png" width="200" alt="Home page with a month summary and an appliance that needs attention"> | <img src="docs/alert.png" width="200" alt="Water heater sheet with its power chart and an alert saying it is on at an unusual time"> | <img src="docs/bill.png" width="200" alt="Bill page with the month estimate and the band meter"> | <img src="docs/advisor.png" width="200" alt="Advisor page with a target of RM 45 and a cut plan per appliance"> |
+| <img src="site/shots/home.png" width="200" alt="Home page with a month summary and an appliance that needs attention"> | <img src="site/shots/alert.png" width="200" alt="Water heater sheet with its power chart and an alert saying it is on at an unusual time"> | <img src="site/shots/bill.png" width="200" alt="Bill page with the month estimate and the band meter"> | <img src="site/shots/advisor.png" width="200" alt="Advisor page with a target of RM 45 and a cut plan per appliance"> |
 | The month so far, the gap to the next rate band, and what needs attention | What was seen, what it costs if it continues, and what to do | The estimate as a range, and how close the month is to a dearer band | Pick a target bill, get a cut per appliance |
 
 The simulated house, which stands in for real smart plugs:
 
-<img src="docs/house.png" width="760" alt="House simulation screen with one card per appliance, its plug state, a switch and a power slider">
+<img src="site/shots/house.png" width="760" alt="House simulation screen with one card per appliance, its plug state, a switch and a power slider">
 
 **Try it in a minute.** Open the live demo, or start it yourself (see Run). Then, with the house speed at 1 min/s:
 1. In the app, open Advisor and pick RM 45. You get a cut plan per appliance.

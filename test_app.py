@@ -436,6 +436,13 @@ class RelayTests(unittest.TestCase):
         hosts = json.loads((server.HERE / "site" / "vercel.json").read_text())      # the Vercel copy points at one service only
         self.assertEqual(len({r["destination"].split("/")[2] for r in hosts["rewrites"] + hosts["redirects"]}), 1)
 
+    def test_every_image_on_the_start_page_is_served(self):
+        import re
+        srcs = re.findall(r'<img[^>]+src="([^"]+)"', (server.HERE / "site" / "index.html").read_text())
+        self.assertTrue(srcs)
+        for src in srcs:                                   # relative, so the same page works on Vercel's static copy
+            self.assertIn("/" + src, server.PAGES, src)
+
     def test_house_screen_is_reachable_through_the_product_port(self):
         import threading, urllib.request, urllib.error
         from http.server import ThreadingHTTPServer

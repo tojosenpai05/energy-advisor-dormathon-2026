@@ -440,7 +440,8 @@ class App:
         return None
 
 
-PAGES = {"/": "site/index.html", "/app": "app.html"}      # site/ is also what Vercel serves on its own (site/vercel.json)
+PAGES = {"/": "site/index.html", "/app": "app.html",       # site/ is also what Vercel serves on its own (site/vercel.json)
+         **{f"/shots/{n}.png": f"site/shots/{n}.png" for n in ("home", "alert", "bill", "advisor", "house")}}
 
 
 def make_handler(app, pages=PAGES):
@@ -470,7 +471,7 @@ def make_handler(app, pages=PAGES):
             if house and u.path in ("/sim", "/api/sim"):
                 return self._relay(house + u.path[1:])
             if u.path in pages:
-                return self._send(200, (HERE / pages[u.path]).read_bytes(), "text/html; charset=utf-8")
+                return self._send(200, (HERE / pages[u.path]).read_bytes(), "image/png" if u.path.endswith(".png") else "text/html; charset=utf-8")
             if u.path == "/sim":                 # reached only when this process started no house (see _relay above)
                 return self._send(200, '<meta charset="utf-8"><p>No simulated house was started with this server: run python3 house.py. <a href="/">Back</a></p>'.encode(), "text/html; charset=utf-8")
             r = app.get(u.path, parse_qs(u.query))
