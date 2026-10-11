@@ -35,10 +35,13 @@ section{padding:34px 0;border-top:2px solid var(--line)}h2{font-size:1.65rem;mar
 .cliff{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center;text-align:center;margin:18px 0 10px}
 .cliff .tile{padding:18px 8px}.cliff .arrow{font:900 1.5rem var(--disp);color:var(--mut)}.cliff .over{border-color:var(--warn);background:#FFF8EE}
 .fine{font-size:.86rem;color:var(--mut)}
+.bands{width:100%;border-collapse:collapse;margin:18px 0 12px;font-variant-numeric:tabular-nums}.bands caption{text-align:left;font-weight:700;padding-bottom:6px}
+.bands th,.bands td{padding:7px 10px;border-bottom:2px solid var(--line);text-align:left}.bands th{font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--mut)}
+.bands th:last-child,.bands td:last-child{text-align:right;font-weight:700}
 .proof{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}.proof .card{padding:18px}
 .proof b{display:block;font:900 1.6rem/1.1 var(--disp);font-variant-numeric:tabular-nums;margin-bottom:6px}.proof span{font-size:.92rem;color:var(--mut)}
 .tag{display:inline-block;font-size:.72rem;font-weight:700;letter-spacing:.05em;border-radius:999px;padding:3px 10px;margin-bottom:10px}
-.tag.real{color:#0B7F63;background:#E3F9F1}.tag.sim{color:#1670B0;background:#E6F2FB}.tag.ass{color:var(--warn);background:#FFF0DC}.tag.no{color:var(--mut);background:#EDEFF1}
+.tag.real{color:#0B7F63;background:#E3F9F1}.tag.sim{color:#1670B0;background:#E6F2FB}.tag.layer{color:var(--link);background:var(--accbg)}.tag.ass{color:var(--warn);background:#FFF0DC}.tag.no{color:var(--mut);background:#EDEFF1}
 .rsa{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}.rsa .card{padding:18px}.rsa ul{margin:0;padding-left:18px;font-size:.93rem}.rsa li{margin:4px 0}
 footer{padding:26px 0 40px;border-top:2px solid var(--line);text-align:center}footer p{font-size:.84rem;color:var(--mut);margin:16px 0 0}
 @keyframes rise{from{opacity:0;transform:translateY(14px)}}@keyframes glow{from{box-shadow:0 0 0 0 rgba(4,173,134,.45)}to{box-shadow:0 0 0 9px rgba(4,173,134,0)}}
@@ -93,7 +96,32 @@ footer{padding:26px 0 40px;border-top:2px solid var(--line);text-align:center}fo
     <div class="tile over"><b id="c-over">&ndash;</b><span id="c-overl">one unit over</span></div>
   </div>
   <p class="fine" id="c-note">&nbsp;</p>
-  <p class="fine">Sources: the band rule, from Sarawak Energy's <a href="https://www.sarawakenergy.com/media-info/announcements-publications/electric-discount-faq" target="_blank" rel="noopener">discount FAQ</a> (the app's tariff code reproduces its three worked examples to the cent); the 25% domestic discount for April to December 2026, covering about 714,000 domestic customers, from their <a href="https://www.sarawakenergy.com/media-info/media-releases/2026/sarawak-energy-domestic-customers-to-receive-25-electricity-bill-discount" target="_blank" rel="noopener">media release</a>.</p>
+  <table class="bands">
+    <caption>Tariff D, domestic: your month's total picks one row</caption>
+    <thead><tr><th scope="col">Units in the month</th><th scope="col">Rate on every unit</th></tr></thead>
+    <tbody>
+      <tr><td>1 to 150</td><td>18 sen</td></tr>
+      <tr><td>151 to 200</td><td>22 sen</td></tr>
+      <tr><td>201 to 300</td><td>25 sen</td></tr>
+      <tr><td>301 to 400</td><td>27 sen</td></tr>
+      <tr><td>401 to 500</td><td>29.5 sen</td></tr>
+      <tr><td>501 to 700</td><td>30 sen</td></tr>
+      <tr><td>701 to 800</td><td>30.5 sen</td></tr>
+      <tr><td>801 to 1,300</td><td>31 sen</td></tr>
+      <tr><td>Above 1,300</td><td>31.5 sen</td></tr>
+    </tbody>
+  </table>
+  <p class="fine">Sources: the band rates and the RM 5.00 minimum monthly charge, from Sarawak Energy's <a href="https://www.sarawakenergy.com/customers/tariffs" target="_blank" rel="noopener">tariff page</a> (Tariff D-Domestic, read October 2026); the band rule, from Sarawak Energy's <a href="https://www.sarawakenergy.com/media-info/announcements-publications/electric-discount-faq" target="_blank" rel="noopener">discount FAQ</a> (the app's tariff code reproduces its three worked examples to the cent); the 25% domestic discount for April to December 2026, covering about 714,000 domestic customers, from their <a href="https://www.sarawakenergy.com/media-info/media-releases/2026/sarawak-energy-domestic-customers-to-receive-25-electricity-bill-discount" target="_blank" rel="noopener">media release</a>.</p>
+</section>
+
+<section class="rv">
+  <h2>How it detects</h2>
+  <p class="sub">Two layers, both learned from each appliance's own readings. A new plug is not judged until it has 14 days of history.</p>
+  <div class="rsa">
+    <div class="card"><span class="tag layer">LAYER 1 &middot; NAMED CHECKS</span><ul><li>Statistics on what is normal for this appliance: running watts, usual hours, share of time on</li><li>Every 5 minutes it looks for: plug not reporting, on at an unusual time, drawing more power than usual, running more of the time</li><li>Says what kind of problem it is</li></ul></div>
+    <div class="card"><span class="tag layer">LAYER 2 &middot; SMALL NEURAL NETWORK</span><ul><li>An autoencoder (25 &rarr; 5 &rarr; 25), written by hand, one per appliance</li><li>Learns the shape of a normal 24 hours, then flags a day it cannot reconstruct on three hourly checks in a row</li><li>Catches patterns the named checks did not anticipate</li></ul></div>
+  </div>
+  <p class="fine" style="margin-top:14px">A finding must persist before it becomes an alert, and each problem gets one alert. On real recordings with 120 injected faults: a fixed watt limit caught 7, layer 1 alone 57, both layers 66.</p>
 </section>
 
 <section class="rv">
